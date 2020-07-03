@@ -2,6 +2,12 @@ class Card:
     """ A Class representing a Card """
 
     def __init__(self, type, content, answer_count=0):
+        """
+        Initializer for Card
+        :param type: "black" or "white" card
+        :param content: The text on the card
+        :param answer_count: How many white cards is required for this card. Only possible when type="black"
+        """
         if not type:
             raise ValueError(f"The card needs to have a type")
         if type != "black" and type != "white":
@@ -17,10 +23,24 @@ class Card:
         self._answer_count = int(answer_count)
 
     def type(self):
+        """
+        Returns the type of the card
+        :return: The type of this card, either "black" or "white"
+        """
         return self._type
 
     def content(self):
+        """
+        Returns the text on the card
+        :return: the text on the card
+        """
         return self._content
 
     def answer_count(self):
+        """
+        Returns the amount of white cards required.
+        For a white cards this is 0.
+        For a black card, this is >= 1.
+        :return: the amount of cards necessary to play
+        """
         return self._answer_count
