@@ -9,7 +9,7 @@ class Deck:
         :param description: the description for this deck
         :param cards: a list of cards, ideally a combination of black and white types
         """
-        if not id:
+        if id is None:
             raise ValueError(f"Deck id cannot be empty")
         if not name:
             raise ValueError(f"Deck name cannot be empty")
@@ -21,6 +21,7 @@ class Deck:
         self._description = description
         self._cards = cards
 
+    @property
     def black_cards(self):
         """
         Get all the black cards in the deck
@@ -32,6 +33,7 @@ class Deck:
                 cards.append(card)
         return cards
 
+    @property
     def white_cards(self):
         """
         Get all the white cards in the deck
@@ -43,6 +45,7 @@ class Deck:
                 cards.append(card)
         return cards
 
+    @property
     def id(self):
         """
         Return the ID of this deck
@@ -50,6 +53,7 @@ class Deck:
         """
         return self._id
 
+    @property
     def name(self):
         """
         Return the Name of this deck
@@ -57,6 +61,7 @@ class Deck:
         """
         return self._name
 
+    @property
     def description(self):
         """
         Return the Description of this deck
@@ -64,10 +69,10 @@ class Deck:
         """
         return self._description
 
-    def __len__(self):
+    @property
+    def len(self):
         """
         Get the amount of cards in the deck
         :return: the amount of cards in the deck
         """
         return self._cards.len()
-

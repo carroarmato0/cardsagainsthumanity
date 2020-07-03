@@ -22,6 +22,7 @@ class Card:
         self._content = content
         self._answer_count = int(answer_count)
 
+    @property
     def type(self):
         """
         Returns the type of the card
@@ -29,6 +30,7 @@ class Card:
         """
         return self._type
 
+    @property
     def content(self):
         """
         Returns the text on the card
@@ -36,6 +38,7 @@ class Card:
         """
         return self._content
 
+    @property
     def answer_count(self):
         """
         Returns the amount of white cards required.
