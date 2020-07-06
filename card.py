@@ -18,27 +18,24 @@ class Card:
             raise ValueError(f"A black card always needs to have at least 1 answer card")
         if type == "white" and answer_count > 0:
             raise ValueError(f"A white card cannot have answer cards")
-        self._type = type
-        self._content = content
-        self._answer_count = int(answer_count)
+        self.type = type
+        self.content = content
+        self.answer_count = int(answer_count)
 
-    @property
     def type(self):
         """
         Returns the type of the card
         :return: The type of this card, either "black" or "white"
         """
-        return self._type
+        return self.type
 
-    @property
     def content(self):
         """
         Returns the text on the card
         :return: the text on the card
         """
-        return self._content
+        return self.content
 
-    @property
     def answer_count(self):
         """
         Returns the amount of white cards required.
@@ -46,4 +43,4 @@ class Card:
         For a black card, this is >= 1.
         :return: the amount of cards necessary to play
         """
-        return self._answer_count
+        return self.answer_count

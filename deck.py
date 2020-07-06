@@ -16,10 +16,10 @@ class Deck:
         if not isinstance(cards, list):
             raise ValueError(f"Supplied cards is not a list")
 
-        self._id = id
-        self._name = name
-        self._description = description
-        self._cards = cards
+        self.id = id
+        self.name = name
+        self.description = description
+        self.cards = cards
 
     @property
     def black_cards(self):
@@ -28,7 +28,7 @@ class Deck:
         :return: list of black cards
         """
         cards = []
-        for card in self._cards:
+        for card in self.cards:
             if card.type == "black":
                 cards.append(card)
         return cards
@@ -40,34 +40,31 @@ class Deck:
         :return: list of white cards
         """
         cards = []
-        for card in self._cards:
+        for card in self.cards:
             if card.type == "white":
                 cards.append(card)
         return cards
 
-    @property
     def id(self):
         """
         Return the ID of this deck
         :return: id of this deck
         """
-        return self._id
+        return self.id
 
-    @property
     def name(self):
         """
         Return the Name of this deck
         :return: name of this deck
         """
-        return self._name
+        return self.name
 
-    @property
     def description(self):
         """
         Return the Description of this deck
         :return: description of this deck
         """
-        return self._description
+        return self.description
 
     @property
     def len(self):
@@ -75,4 +72,4 @@ class Deck:
         Get the amount of cards in the deck
         :return: the amount of cards in the deck
         """
-        return len(self._cards)
+        return len(self.cards)
