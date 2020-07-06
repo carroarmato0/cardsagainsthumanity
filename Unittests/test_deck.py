@@ -27,5 +27,5 @@ class TestDeck(TestCase):
     def test_description(self):
         self.assertEqual(self.deck.description, "The animal pack")
 
-    def len(self):
+    def test_len(self):
         self.assertEqual(self.deck.len, 3)

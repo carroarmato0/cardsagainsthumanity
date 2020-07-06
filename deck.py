@@ -75,4 +75,4 @@ class Deck:
         Get the amount of cards in the deck
         :return: the amount of cards in the deck
         """
-        return self._cards.len()
+        return len(self._cards)
