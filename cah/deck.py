@@ -73,3 +73,20 @@ class Deck:
         :return: the amount of cards in the deck
         """
         return len(self.cards)
+
+    def __eq__(self, other):
+        """
+        Validate object for equality
+        :param other: the other object to compare to
+        :return: True of False is the object is equal to this instance
+        """
+        if type(self) == type(other) \
+                and self.id == other.id \
+                and self.name == other.name \
+                and self.description == other.description \
+                and self.len == other.len \
+                and self.black_cards == other.black_cards \
+                and self.white_cards == other.white_cards:
+            return True
+        else:
+            return False
