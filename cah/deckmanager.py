@@ -1,8 +1,9 @@
-import urllib.request
 import json
+import urllib.parse
+import urllib.request
 
 from cah.deck import Deck
-from cah.utils import convert_to_dict, dict_to_obj
+from cah.utils import uri_validator, dict_to_obj, convert_to_dict
 
 
 class DeckManager:
@@ -14,19 +15,21 @@ class DeckManager:
 
         if uri is None:
             raise ValueError(f"Empty uri has been given to load a deck")
-        else:
+        elif uri_validator(uri):
             """ Attempt to load the json data as a url """
             try:
                 with urllib.request.urlopen(uri) as url:
                     data = json.loads(url.read().decode())
                     deck = json.loads(data, object_hook=dict_to_obj)
             except ValueError:
-                try:
-                    """ Attempt to load the json data as a file """
-                    with open(uri, 'r') as reader:
-                        deck = json.loads(reader.read(), object_hook=dict_to_obj)
-                except FileNotFoundError:
-                    pass
+                pass
+        else:
+            try:
+                """ Attempt to load the json data as a file """
+                with open(uri, 'r') as reader:
+                    deck = json.loads(reader.read(), object_hook=dict_to_obj)
+            except FileNotFoundError:
+                pass
         return deck
 
     def save(self, deck=None):
