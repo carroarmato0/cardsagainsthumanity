@@ -44,3 +44,17 @@ class Card:
         :return: the amount of cards necessary to play
         """
         return self.answer_count
+
+    def __eq__(self, other):
+        """
+        Validate object for equality
+        :param other: the other object to compare to
+        :return: True of False is the object is equal to this instance
+        """
+        if type(self) == type(other) \
+                and self.type == other.type \
+                and self.content == other.content \
+                and self.answer_count == other.answer_count:
+            return True
+        else:
+            return False
