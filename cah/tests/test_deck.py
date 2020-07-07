@@ -6,7 +6,7 @@ from cah.deck import Deck
 class TestDeck(TestCase):
 
     def setUp(self):
-        black_card = Card(type="black", content="Why did the chicken cross the road?", answer_count=1)
+        black_card = Card(type="black", content="Why did the chicken cross the road?", pick=1)
         white_card1 = Card(type="white", content="A homoerotic subplot")
         white_card2 = Card(type="white", content="To get to the other side")
         card_list = [black_card, white_card1, white_card2]
@@ -31,7 +31,7 @@ class TestDeck(TestCase):
         self.assertEqual(self.deck.len, 3)
 
     def test_eq(self):
-        black_card = Card(type="black", content="Why did the chicken cross the road?", answer_count=1)
+        black_card = Card(type="black", content="Why did the chicken cross the road?", pick=1)
         white_card1 = Card(type="white", content="A homoerotic subplot")
         white_card2 = Card(type="white", content="To get to the other side")
         card_list_a = [black_card, white_card1, white_card2]

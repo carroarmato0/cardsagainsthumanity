@@ -9,7 +9,7 @@ from cah.deckmanager import DeckManager
 class TestDeckManager(TestCase):
 
     def setUp(self):
-        black_card = Card(type="black", content="Why did the chicken cross the road?", answer_count=1)
+        black_card = Card(type="black", content="Why did the chicken cross the road?", pick=1)
         white_card1 = Card(type="white", content="A homoerotic subplot")
         white_card2 = Card(type="white", content="To get to the other side")
         card_list = [black_card, white_card1, white_card2]

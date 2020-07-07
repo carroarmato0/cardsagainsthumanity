@@ -18,26 +18,26 @@ class TestUtils(TestCase):
         self.assertTrue(uri_validator(uri5))
 
     def test_convert_to_dict(self):
-        card = Card(type="black", content="Why did the chicken cross the road?", answer_count=1)
+        card = Card(type="black", content="Why did the chicken cross the road?", pick=1)
         reference_dict = {
             '__class__': type(card).__name__,
             '__module__': card.__module__,
             'type': 'black',
             'content': 'Why did the chicken cross the road?',
-            'answer_count': 1
+            'pick': 1
         }
         card_dict = convert_to_dict(card)
         self.assertTrue(isinstance(card_dict, dict))
         self.assertDictEqual(card_dict, reference_dict)
 
     def test_dict_to_obj(self):
-        reference_card = Card(type="black", content="Why did the chicken cross the road?", answer_count=1)
+        reference_card = Card(type="black", content="Why did the chicken cross the road?", pick=1)
         card_dict = {
             '__class__': type(reference_card).__name__,
             '__module__': reference_card.__module__,
             'type': 'black',
             'content': 'Why did the chicken cross the road?',
-            'answer_count': 1
+            'pick': 1
         }
         card = dict_to_obj(card_dict)
         self.assertEqual(card, reference_card)
