@@ -1,13 +1,14 @@
 class Deck:
     """ A Class representing a deck of cards """
 
-    def __init__(self, id, name, description, cards):
+    def __init__(self, id, name, description, cards, lang='en'):
         """
         Initializer for the Deck
         :param id: a unique identified for this deck
         :param name: a short title/name for this deck
         :param description: the description for this deck
         :param cards: a list of cards, ideally a combination of black and white types
+        :param lang: language code
         """
         if id is None:
             raise ValueError(f"Deck id cannot be empty")
@@ -20,6 +21,7 @@ class Deck:
         self.name = name
         self.description = description
         self.cards = cards
+        self.lang = lang
 
     @property
     def black_cards(self):
@@ -66,6 +68,13 @@ class Deck:
         """
         return self.description
 
+    def lang(self):
+        """
+        Return the ISO 639-1 code representation of the main Deck's language
+        :return: language code of this deck
+        """
+        return self.lang
+
     @property
     def len(self):
         """
@@ -86,7 +95,8 @@ class Deck:
                 and self.description == other.description \
                 and self.len == other.len \
                 and self.black_cards == other.black_cards \
-                and self.white_cards == other.white_cards:
+                and self.white_cards == other.white_cards \
+                and self.lang == other.lang:
             return True
         else:
             return False
