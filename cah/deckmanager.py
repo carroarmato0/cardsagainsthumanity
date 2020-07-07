@@ -1,8 +1,8 @@
 import urllib.request
 import json
 
-from deck import Deck
-from utils import convert_to_dict, dict_to_obj
+from cah.deck import Deck
+from cah.utils import convert_to_dict, dict_to_obj
 
 
 class DeckManager:

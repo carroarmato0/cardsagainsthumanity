@@ -1,9 +1,9 @@
 import os
 from unittest import TestCase
 
-from card import Card
-from deck import Deck
-from deckmanager import DeckManager
+from cah.card import Card
+from cah.deck import Deck
+from cah.deckmanager import DeckManager
 
 
 class TestDeckManager(TestCase):
