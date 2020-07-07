@@ -18,3 +18,8 @@ class TestCard(TestCase):
     def test_answer_count(self):
         self.assertEqual(self.card_black.answer_count, 1)
         self.assertEqual(self.card_white.answer_count, 0)
+
+    def test_eq(self):
+        card = Card(type="black", content="Why did the chicken cross the road?", answer_count=1)
+        self.assertEqual(card, self.card_black)
+        self.assertNotEqual(self.card_black, self.card_white)
