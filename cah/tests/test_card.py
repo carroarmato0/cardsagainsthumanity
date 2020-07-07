@@ -19,6 +19,10 @@ class TestCard(TestCase):
         self.assertEqual(self.card_black.pick, 1)
         self.assertEqual(self.card_white.pick, 0)
 
+    def test_draw(self):
+        self.assertEqual(self.card_black.draw, 1)
+        self.assertEqual(self.card_white.draw, 0)
+
     def test_eq(self):
         card = Card(type="black", content="Why did the chicken cross the road?", pick=1)
         self.assertEqual(card, self.card_black)
