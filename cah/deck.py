@@ -1,7 +1,10 @@
+from cah.card import Card
+
+
 class Deck:
     """ A Class representing a deck of cards """
 
-    def __init__(self, id, name, description, cards, lang='en'):
+    def __init__(self, id, name='', description='', cards=[], lang='en'):
         """
         Initializer for the Deck
         :param id: a unique identified for this deck
@@ -100,3 +103,25 @@ class Deck:
             return True
         else:
             return False
+
+    def add_card(self, card):
+        """
+        Add a Card to the Deck
+        :param card: a Card object
+        :return:
+        """
+        if isinstance(card, Card):
+            self.cards.append(card)
+        else:
+            raise ValueError(f"Not a valid Card object. {type(card)} was passed")
+
+    def remove_card(self, card):
+        """
+        Remove a Card from the Deck
+        :param card: a Card object
+        :return:
+        """
+        if isinstance(card, Card):
+            self.cards.remove(card)
+        else:
+            raise ValueError(f"Not a valid Card object. {type(card)} was passed")

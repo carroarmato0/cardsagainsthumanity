@@ -41,3 +41,13 @@ class TestDeck(TestCase):
 
         self.assertEqual(self.deck, deck_a)
         self.assertNotEqual(self.deck, deck_b)
+
+    def test_add_card(self):
+        card = Card(type="white", content="A wombat")
+        self.deck.add_card(card)
+        self.assertIn(card, self.deck.white_cards)
+
+    def test_remove_card(self):
+        card = Card(type="white", content="To get to the other side")
+        self.deck.remove_card(card)
+        self.assertNotIn(card, self.deck.white_cards)
