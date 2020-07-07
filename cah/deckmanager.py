@@ -37,9 +37,6 @@ class DeckManager:
         if not isinstance(deck, Deck):
             raise ValueError(f"The supplied deck is not recognized")
         else:
-            """
-            deck_json = DeckEncoder().encode(deck)
-            """
             deck_json = json.dumps(deck, default=convert_to_dict, indent=4, sort_keys=True)
             with open(str(deck.id) + '.json', 'w', encoding="utf-8") as writer:
                 writer.write(deck_json)

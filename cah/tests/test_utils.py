@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from cah.card import Card
+from cah.cardtype import CardType
 from cah.utils import uri_validator, convert_to_dict, dict_to_obj
 
 
@@ -18,11 +19,11 @@ class TestUtils(TestCase):
         self.assertTrue(uri_validator(uri5))
 
     def test_convert_to_dict(self):
-        card = Card(type="black", content="Why did the chicken cross the road?")
+        card = Card(type=CardType.PROMPT, content="Why did the chicken cross the road?")
         reference_dict = {
             '__class__': type(card).__name__,
             '__module__': card.__module__,
-            'type': 'black',
+            'type': CardType.PROMPT,
             'content': 'Why did the chicken cross the road?',
             'pick': 1,
             'draw': 1,
@@ -32,11 +33,11 @@ class TestUtils(TestCase):
         self.assertDictEqual(card_dict, reference_dict)
 
     def test_dict_to_obj(self):
-        reference_card = Card(type="black", content="Why did the chicken cross the road?")
+        reference_card = Card(type=CardType.PROMPT, content="Why did the chicken cross the road?")
         card_dict = {
             '__class__': type(reference_card).__name__,
             '__module__': reference_card.__module__,
-            'type': 'black',
+            'type': CardType.PROMPT,
             'content': 'Why did the chicken cross the road?',
             'pick': 1,
             'draw': 1,

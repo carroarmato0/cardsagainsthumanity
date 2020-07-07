@@ -1,22 +1,23 @@
 from unittest import TestCase
 from cah.card import Card
+from cah.cardtype import CardType
 from cah.deck import Deck
 
 
 class TestDeck(TestCase):
 
     def setUp(self):
-        black_card = Card(type="black", content="Why did the chicken cross the road?", pick=1)
-        white_card1 = Card(type="white", content="A homoerotic subplot")
-        white_card2 = Card(type="white", content="To get to the other side")
-        card_list = [black_card, white_card1, white_card2]
+        prompt_card = Card(type=CardType.PROMPT, content="Why did the chicken cross the road?", pick=1)
+        response_card1 = Card(type=CardType.RESPONSE, content="A homoerotic subplot")
+        response_card2 = Card(type=CardType.RESPONSE, content="To get to the other side")
+        card_list = [prompt_card, response_card1, response_card2]
         self.deck = Deck(id=0, name="Animals", description="The animal pack", cards=card_list)
 
-    def test_black_cards(self):
-        self.assertEqual(len(self.deck.black_cards), 1)
+    def test_prompt_cards(self):
+        self.assertEqual(len(self.deck.prompt_cards), 1)
 
-    def test_white_cards(self):
-        self.assertEqual(len(self.deck.white_cards), 2)
+    def test_response_cards(self):
+        self.assertEqual(len(self.deck.response_cards), 2)
 
     def test_id(self):
         self.assertEqual(self.deck.id, 0)
@@ -31,10 +32,10 @@ class TestDeck(TestCase):
         self.assertEqual(self.deck.len, 3)
 
     def test_eq(self):
-        black_card = Card(type="black", content="Why did the chicken cross the road?", pick=1)
-        white_card1 = Card(type="white", content="A homoerotic subplot")
-        white_card2 = Card(type="white", content="To get to the other side")
-        card_list_a = [black_card, white_card1, white_card2]
+        prompt_card = Card(type=CardType.PROMPT, content="Why did the chicken cross the road?", pick=1)
+        response_card1 = Card(type=CardType.RESPONSE, content="A homoerotic subplot")
+        response_card2 = Card(type=CardType.RESPONSE, content="To get to the other side")
+        card_list_a = [prompt_card, response_card1, response_card2]
         deck_a = Deck(id=0, name="Animals", description="The animal pack", cards=card_list_a)
 
         deck_b = Deck(id=0, name="Animals", description="The animal pack", cards=[])
@@ -43,11 +44,11 @@ class TestDeck(TestCase):
         self.assertNotEqual(self.deck, deck_b)
 
     def test_add_card(self):
-        card = Card(type="white", content="A wombat")
+        card = Card(type=CardType.RESPONSE, content="A wombat")
         self.deck.add_card(card)
-        self.assertIn(card, self.deck.white_cards)
+        self.assertIn(card, self.deck.response_cards)
 
     def test_remove_card(self):
-        card = Card(type="white", content="To get to the other side")
+        card = Card(type=CardType.RESPONSE, content="To get to the other side")
         self.deck.remove_card(card)
-        self.assertNotIn(card, self.deck.white_cards)
+        self.assertNotIn(card, self.deck.response_cards)

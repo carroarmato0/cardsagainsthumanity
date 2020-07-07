@@ -2,6 +2,7 @@ import os
 from unittest import TestCase
 
 from cah.card import Card
+from cah.cardtype import CardType
 from cah.deck import Deck
 from cah.deckmanager import DeckManager
 
@@ -9,10 +10,10 @@ from cah.deckmanager import DeckManager
 class TestDeckManager(TestCase):
 
     def setUp(self):
-        black_card = Card(type="black", content="Why did the chicken cross the road?", pick=1)
-        white_card1 = Card(type="white", content="A homoerotic subplot")
-        white_card2 = Card(type="white", content="To get to the other side")
-        card_list = [black_card, white_card1, white_card2]
+        prompt_card = Card(type=CardType.PROMPT, content="Why did the chicken cross the road?", pick=1)
+        response_card1 = Card(type=CardType.RESPONSE, content="A homoerotic subplot")
+        response_card2 = Card(type=CardType.RESPONSE, content="To get to the other side")
+        card_list = [prompt_card, response_card1, response_card2]
         self.deck = Deck(id=0, name="Animals", description="The animal pack", cards=card_list)
         self.manager = DeckManager()
 

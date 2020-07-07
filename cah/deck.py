@@ -1,4 +1,5 @@
 from cah.card import Card
+from cah.cardtype import CardType
 
 
 class Deck:
@@ -27,26 +28,26 @@ class Deck:
         self.lang = lang
 
     @property
-    def black_cards(self):
+    def prompt_cards(self):
         """
-        Get all the black cards in the deck
-        :return: list of black cards
+        Get all the prompt cards in the deck
+        :return: list of prompt cards
         """
         cards = []
         for card in self.cards:
-            if card.type == "black":
+            if card.type == CardType.PROMPT:
                 cards.append(card)
         return cards
 
     @property
-    def white_cards(self):
+    def response_cards(self):
         """
-        Get all the white cards in the deck
-        :return: list of white cards
+        Get all the response cards in the deck
+        :return: list of response cards
         """
         cards = []
         for card in self.cards:
-            if card.type == "white":
+            if card.type == CardType.RESPONSE:
                 cards.append(card)
         return cards
 
@@ -97,8 +98,8 @@ class Deck:
                 and self.name == other.name \
                 and self.description == other.description \
                 and self.len == other.len \
-                and self.black_cards == other.black_cards \
-                and self.white_cards == other.white_cards \
+                and self.prompt_cards == other.prompt_cards \
+                and self.response_cards == other.response_cards \
                 and self.lang == other.lang:
             return True
         else:
