@@ -3,7 +3,7 @@ import urllib.parse
 import urllib.request
 
 from cah.deck import Deck
-from cah.utils import uri_validator, dict_to_obj, convert_to_dict
+from cah.utils import uri_validator, dict_to_obj, convert_to_dict, convert_to_dict_with_meta
 
 
 class DeckManager:
@@ -37,6 +37,6 @@ class DeckManager:
         if not isinstance(deck, Deck):
             raise ValueError(f"The supplied deck is not recognized")
         else:
-            deck_json = json.dumps(deck, default=convert_to_dict, indent=4, sort_keys=True)
-            with open(str(deck.id) + '.json', 'w', encoding="utf-8") as writer:
+            deck_json = json.dumps(deck, default=convert_to_dict_with_meta, indent=4, sort_keys=True)
+            with open(str(deck.name) + '.json', 'w', encoding="utf-8") as writer:
                 writer.write(deck_json)
