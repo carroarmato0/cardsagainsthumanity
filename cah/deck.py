@@ -1,5 +1,8 @@
+import json
+
 from cah.card import Card
 from cah.cardtype import CardType
+from cah.utils import convert_to_dict
 
 
 class Deck:
@@ -114,3 +117,21 @@ class Deck:
             self.cards.remove(card)
         else:
             raise ValueError(f"Not a valid Card object. {type(card)} was passed")
+
+    def to_json_obj(self):
+        """
+        Return the JSON Object of this class
+        :return: JSON Object
+        """
+        return {
+            'name': self.name,
+            'description': self.description,
+            'lang': self.lang,
+            'cards': [card.to_json_obj() for card in self.cards]}
+
+    def to_json(self):
+        """
+        Return the JSON String of this class
+        :return: JSON str
+        """
+        return json.dumps(self.to_json_obj(), default=convert_to_dict)

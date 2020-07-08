@@ -1,4 +1,7 @@
+import json
+
 from cah.cardtype import CardType
+from cah.utils import convert_to_dict
 
 
 class Card:
@@ -93,3 +96,17 @@ class Card:
             return True
         else:
             return False
+
+    def to_json_obj(self):
+        """
+        Return the JSON Object of this class
+        :return: JSON Object
+        """
+        return {'type': self.type, 'content': self.content, 'pick': self.pick, 'draw': self.draw}
+
+    def to_json(self):
+        """
+        Return the JSON String of this class
+        :return: JSON str
+        """
+        return json.dumps(self.to_json_obj())

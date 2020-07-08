@@ -1,3 +1,4 @@
+import json
 from unittest import TestCase
 from cah.card import Card
 from cah.cardtype import CardType
@@ -28,3 +29,17 @@ class TestCard(TestCase):
         card = Card(type=CardType.PROMPT, content="Why did the chicken cross the road?", pick=1)
         self.assertEqual(card, self.prompt_card)
         self.assertNotEqual(self.prompt_card, self.response_card)
+
+    def test_to_json_obj(self):
+        json_obj = self.prompt_card.to_json_obj()
+        self.assertTrue(isinstance(json_obj, dict))
+        self.assertEqual(json_obj['type'], self.prompt_card.type)
+        self.assertEqual(json_obj['content'], self.prompt_card.content)
+        self.assertEqual(json_obj['pick'], self.prompt_card.pick)
+        self.assertEqual(json_obj['draw'], self.prompt_card.draw)
+
+    def test_to_json(self):
+        json_str = self.prompt_card.to_json()
+        self.assertTrue(isinstance(json_str, str))
+        self.assertEqual(json_str, '{"type": "prompt", "content": "Why did the chicken cross the road?", "pick": 1, '
+                                   '"draw": 1}')

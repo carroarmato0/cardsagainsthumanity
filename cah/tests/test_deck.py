@@ -49,3 +49,22 @@ class TestDeck(TestCase):
         card = Card(type=CardType.RESPONSE, content="To get to the other side")
         self.deck.remove_card(card)
         self.assertNotIn(card, self.deck.response_cards)
+
+    def test_to_json_obj(self):
+        json_obj = self.deck.to_json_obj()
+        self.assertTrue(isinstance(json_obj, dict))
+        self.assertEqual(json_obj['name'], self.deck.name)
+        self.assertEqual(json_obj['description'], self.deck.description)
+        self.assertEqual(json_obj['lang'], self.deck.lang)
+        for card in self.deck.cards:
+            card_obj = card.to_json_obj()
+            self.assertIn(card_obj, json_obj['cards'])
+
+    def test_to_json(self):
+        json_str = self.deck.to_json()
+        self.assertTrue(isinstance(json_str, str))
+        self.assertEqual(json_str, '{"name": "Animals", "description": "The animal pack", "lang": "en", "cards": [{'
+                                   '"type": "prompt", "content": "Why did the chicken cross the road?", "pick": 1, '
+                                   '"draw": 1}, {"type": "response", "content": "A homoerotic subplot", "pick": 0, '
+                                   '"draw": 0}, {"type": "response", "content": "To get to the other side", '
+                                   '"pick": 0, "draw": 0}]}')
