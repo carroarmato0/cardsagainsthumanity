@@ -11,16 +11,13 @@ class TestDeck(TestCase):
         response_card1 = Card(type=CardType.RESPONSE, content="A homoerotic subplot")
         response_card2 = Card(type=CardType.RESPONSE, content="To get to the other side")
         card_list = [prompt_card, response_card1, response_card2]
-        self.deck = Deck(id=0, name="Animals", description="The animal pack", cards=card_list)
+        self.deck = Deck(name="Animals", description="The animal pack", cards=card_list)
 
     def test_prompt_cards(self):
         self.assertEqual(len(self.deck.prompt_cards), 1)
 
     def test_response_cards(self):
         self.assertEqual(len(self.deck.response_cards), 2)
-
-    def test_id(self):
-        self.assertEqual(self.deck.id, 0)
 
     def test_name(self):
         self.assertEqual(self.deck.name, "Animals")
@@ -36,9 +33,9 @@ class TestDeck(TestCase):
         response_card1 = Card(type=CardType.RESPONSE, content="A homoerotic subplot")
         response_card2 = Card(type=CardType.RESPONSE, content="To get to the other side")
         card_list_a = [prompt_card, response_card1, response_card2]
-        deck_a = Deck(id=0, name="Animals", description="The animal pack", cards=card_list_a)
+        deck_a = Deck(name="Animals", description="The animal pack", cards=card_list_a)
 
-        deck_b = Deck(id=0, name="Animals", description="The animal pack", cards=[])
+        deck_b = Deck(name="Animals", description="The animal pack", cards=[])
 
         self.assertEqual(self.deck, deck_a)
         self.assertNotEqual(self.deck, deck_b)
