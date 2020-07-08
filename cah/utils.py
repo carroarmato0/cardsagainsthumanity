@@ -5,6 +5,15 @@ import importlib
 def convert_to_dict(obj):
     """
     A function takes in a custom object and returns a dictionary representation of the object.
+    :param obj: the object to be serialized
+    :return: dict representation of the object
+    """
+    return obj.__dict__
+
+
+def convert_to_dict_with_meta(obj):
+    """
+    A function takes in a custom object and returns a dictionary representation of the object.
     This dict representation includes meta data such as the object's module and class names.
     :param obj: the object to be serialized
     :return: dict representation of the object
