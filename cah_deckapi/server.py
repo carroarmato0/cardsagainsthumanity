@@ -3,7 +3,6 @@ import json
 from bottle import route, run, view, redirect, response, static_file, template, request, abort
 from bottle_mongo import MongoPlugin
 from bson import ObjectId
-from bson.codec_options import TypeRegistry, CodecOptions
 
 from cah.card import Card
 from cah.deck import Deck
