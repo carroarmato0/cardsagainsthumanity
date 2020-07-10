@@ -1,0 +1,102 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+header {
+    display: block;
+    padding-top: 30px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+}
+
+header h2 {
+    color: white;
+    margin-left: 30px;
+    text-shadow: 1px 1px #888888;
+}
+
+header p {
+    color: white;
+    margin-left: 30px;
+    text-shadow: 1px 1px #888888;
+}
+
+nav {
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+section#content {
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+section#controls {
+    text-align: center;
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-bottom: 10px;
+}
+
+.cards, .decks {
+    margin: 10px;
+}
+
+.deck {
+    text-decoration: bold;
+    text-shadow: 2px 2px #ffffff;
+    background: #FAFAF8;
+}
+
+.decks a, .cards a {
+    text-decoration: none;
+}
+
+.deck, .card {
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    height: 320px;
+    width: 220px;
+    margin: 10px;
+    list-style: none;
+    box-shadow: 2px 2px grey;
+    display: inline-flex;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+.deck .content, .card .content {
+    height: 80%;
+}
+
+.deck .modifiers, .card .modifiers {
+    list-style: none;
+    float: right;
+    font-weight: bold;
+}
+
+.prompt-card {
+    background-color: black;
+    color: white;
+}
+
+.response-card {
+    background-color: #FAFAF8;
+    color: black;
+}
+
+main#app .error {
+    display: block;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+footer {
+    display: block;
+    background-color: #7CB9E8;
+    text-shadow: 1px 1px #888888;
+    padding: 15px;
+}
