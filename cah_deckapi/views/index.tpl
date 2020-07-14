@@ -1,52 +1,64 @@
 % rebase('base.tpl', title="CAH - DeckManager", stylesheets=stylesheets, scripts=scripts)
 
-    <hr/>
-    <section id="controls">
-        <form action="/api/v1/decks/" method="post">
-            <label for="fname">Name:</label>
-            <input type="text" id="fname" name="fname" value="">
-            <label for="fdescription">Description:</label>
-            <input type="text" id="fdescription" name="fdescription" value="">
-            <label for="flang">Language:</label>
-            <input type="text" id="flang" name="flang" size="1" value="en">
-            <input type="submit" value="Add" />
+        <hr/>
+        <form id="deck_submit" class="row gy-2 gx-3 align-items-center needs-validation" novalidate action="">
+            <div class="row g-1">
+                <div class="col-auto">
+                    <input type="text" class="form-control" id="fname" name="fname" placeholder="Deck Name" aria-label="Deck Name" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please fill in a name.
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <input type="text" class="form-control" id="fdescription" name="fdescription" placeholder="Description" aria-label="Description">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select" id="flang" name="flang" aria-label="Language" required>
+                        % for lang in languages:
+                            % if lang == "en":
+                                <option selected value="{{ lang }}">{{ languages[lang].name }}</option>
+                            % elif lang in {'ia'}:
+                                % pass;
+                            % else:
+                                <option value="{{ lang }}">{{ languages[lang].name }}</option>
+                            % end
+                        % end
+                    </select>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please select a valid language.
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </div>
         </form>
-    </section>
-    <hr/>
+        <hr/>
 
-    <main id="app">
-        <span class="error" v-if="notFound">There are no Decks found :(</span>
-        <ul class="decks">
-            <li class="deck" v-for="deck in decks" :key="deck._id">
-                <a v-bind:href="'/decks/' + deck._id.$oid">
-                    <article>
-                        <p class="content">{{ '{{ deck.name }}' }}</p>
-                        <ul class="modifiers">
-                            <li>Language: {{ '{{ deck.lang }}' }}</li>
-                            <li>Cards: {{ '{{ deck.cards.length }}' }}</li>
-                        </ul>
-                    </article>
-                </a>
-            </li>
-        </ul>
-    </main>
+        <span id="no_decks">No decks found.</span>
 
-    <script>
-        new Vue({
-          el: '#app',
-          data () {
-            return {
-              decks: null,
-              notFound: true
-            }
-          },
-          mounted () {
-            axios
-              .get('/api/v1/decks/')
-              .then(response => (
-                this.decks = response.data,
-                this.notFound = false
-              ))
-          }
-        })
-    </script>
+        <table id="deck_overview" class="table table-hover" style="display: none;">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Language</th>
+                    <th scope="col">Cards</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="display: none;">
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>

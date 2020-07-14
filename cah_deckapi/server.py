@@ -1,8 +1,9 @@
 import json
 
-from bottle import route, run, view, redirect, response, static_file, template, request, abort
+from bottle import route, run, redirect, response, static_file, template, request
 from bottle_mongo import MongoPlugin
 from bson import ObjectId
+from iso639 import languages
 
 from cah.card import Card
 from cah.deck import Deck
@@ -16,27 +17,17 @@ debug = True
 def index():
     stylesheets = []
     scripts = []
-    if debug:
-        scripts.append('<script src="/js/vue/vue.js"></script>')
-    else:
-        scripts.append('<script src="/js/vue/vue.min.js"></script>')
-    scripts.append('<script src="/js/axios/axios.min.js"></script>')
     stylesheets.append('<link rel="stylesheet" href="/css/main.css">')
-    return template('index', stylesheets=stylesheets, scripts=scripts)
+    lang = languages.part1
+    return template('index', stylesheets=stylesheets, scripts=scripts, languages=lang)
 
 
 @route('/decks/<id:path>', method='GET')
-def get_deck_view(id, mongodb):
+def get_deck_view(id):
     stylesheets = []
     scripts = []
-    if debug:
-        scripts.append('<script src="/js/vue/vue.js"></script>')
-    else:
-        scripts.append('<script src="/js/vue/vue.min.js"></script>')
-    scripts.append('<script src="/js/axios/axios.min.js"></script>')
     stylesheets.append('<link rel="stylesheet" href="/css/main.css">')
-    deck = mongodb['decks'].find_one({"_id": ObjectId(id)})
-    return template('deck_view', stylesheets=stylesheets, scripts=scripts, deck=deck)
+    return template('deck_view', stylesheets=stylesheets, scripts=scripts, deck_id=id)
 
 
 @route('/api/v1/decks/', method='GET')
@@ -73,16 +64,39 @@ def add_card(id, mongodb):
 
 @route('/api/v1/decks/', method='POST')
 def add_deck(mongodb):
-    deck = Deck(
-        name=request.forms.get('fname'),
-        description=request.forms.get('fdescription'),
-        lang=request.forms.get('flang')
-    )
+    response.content_type = "application/json"
+
+    deck = None
+    # noinspection PyBroadException
+    try:
+        deck = Deck(
+            name=request.json['name'],
+            description=request.json['description'],
+            lang=request.json['lang'],
+            cards=request.json['cards']
+        )
+    except:
+        response.status = 400
+        return '{"status": "nok", "error": "Invalid deck submitted"}'
     if deck is not None:
-        mongodb['decks'].insert_one(deck.to_json_obj())
-        redirect('/')
+        result = mongodb['decks'].insert_one(deck.to_json_obj())
+        if not result.acknowledged:
+            response.status = 500
+            return '{"status": "nok", "error": "Unknown error upon inserting"}'
+        else:
+            return '{"status": "ok", "id": "' + str(result.inserted_id) + '"}'
+
+
+@route('/api/v1/decks/<id:path>', method='DELETE')
+def delete_deck(id, mongodb):
+    response.content_type = "application/json"
+    result = mongodb['decks'].delete_one({'_id': ObjectId(id)})
+    if result.acknowledged:
+        response.code = 202
+        return '{"status": "ok", "id": "' + str(id) + '"}'
     else:
-        return None
+        response.code = 404
+        return '{"status": "nok", "error": "Deck not found"}'
 
 
 @route('/js/<filename:path>', method='GET')
