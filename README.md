@@ -23,6 +23,10 @@ Players can choose among a default set of card Decks, and add additional ones by
 ## Roadmap
 Since this is a personal project, no time-frame is put in place, however, there are milestones that can be reached.
 
+The main target is to reach a [first stable release](https://github.com/carroarmato0/cardsagainsthumanity/issues?q=is%3Aissue+milestone%3A%22First+Release%22+).
+
+This list gives an overview of the things already accomplished, and what's remaining to be done.
+
 * ~~Implement a basic library to represent cards and decks~~
 * Implement the DeckAPI
   * ~~Getting all Decks~~
