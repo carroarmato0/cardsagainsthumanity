@@ -16,13 +16,16 @@
                 <div class="row">
                     <div class="col-auto mt-2">
                         <label class="form-label" for="ftype">Type: </label>
-                        <input class="form-check-input" type="radio" name="ftype" id="fprompt">
+                        <input class="form-check-input" type="radio" name="ftype" checked id="fprompt">
                         <label class="form-check-label" for="fprompt">Prompt</label>
-                        <input class="form-check-input" type="radio" name="ftype" checked id="fanswer">
+                        <input class="form-check-input" type="radio" name="ftype" id="fanswer">
                         <label class="form-check-label" for="fanswer">Answer</label>
                     </div>
                     <div class="col-auto">
-                        <input class="form-control" type="text" placeholder="Content" />
+                        <input class="form-control" type="text" id="fcontent" name="fcontent" required placeholder="Content" />
+                        <div class="invalid-feedback">
+                            Please fill in the content.
+                        </div>
                     </div>
                     <div class="col-auto mt-1">
                         <label class="form-check-label" for="fpick">Pick:</label>

@@ -13,12 +13,54 @@ function fetchDeck(table, id) {
                 document.getElementById("deck_language").innerText="Language: " + data.lang;
                 document.getElementById("deck_description").innerText="Description: " + data.description;
 
+                // Perform an initial state check of the radio buttons
+                if (document.getElementById("fprompt").checked) {
+                    document.getElementById('fpick').disabled = false;
+                    document.getElementById('fdraw').disabled = false;
+                } else if (document.getElementById("fanswer").checked) {
+                    document.getElementById('fpick').disabled = true;
+                    document.getElementById('fdraw').disabled = true;
+                }
+
+                // Perform an initial state check of the content
+                document.getElementById("fcontent").value = "";
+
+                // Perform an initial state check of Pick and Draw
+                if (document.getElementById("fprompt").checked) {
+                    if (document.getElementById('fpick').value <= 0) {
+                        document.getElementById('fpick').value = 1;
+                    }
+                    if (document.getElementById('fdraw').value <= 0) {
+                        document.getElementById('fdraw').value = 1;
+                    }
+                } else if (document.getElementById("fdraw").checked) {
+                    if (document.getElementById('fpick').value > 0) {
+                        document.getElementById('fpick').value = 0;
+                    }
+                    if (document.getElementById('fdraw').value > 0) {
+                        document.getElementById('fdraw').value = 0;
+                    }
+                }
                 // Add events to radio buttons
-                document.getElementById("fprompt").addEventListener('onclick', function(event) {
-                    console.log("Prompt clicked");
+                document.getElementById("fprompt").addEventListener('change', function(event) {
+                    document.getElementById('fpick').disabled = false;
+                    document.getElementById('fdraw').disabled = false;
+                    if (document.getElementById('fpick').value <= 0) {
+                        document.getElementById('fpick').value = 1;
+                    }
+                    if (document.getElementById('fdraw').value <= 0) {
+                        document.getElementById('fdraw').value = 1;
+                    }
                 });
-                document.getElementById("fanswer").addEventListener('onclick', function(event) {
-                    console.log("Answer clicked");
+                document.getElementById("fanswer").addEventListener('change', function(event) {
+                    document.getElementById('fpick').disabled = true;
+                    document.getElementById('fdraw').disabled = true;
+                    if (document.getElementById('fpick').value > 0) {
+                        document.getElementById('fpick').value = 0;
+                    }
+                    if (document.getElementById('fdraw').value > 0) {
+                        document.getElementById('fdraw').value = 0;
+                    }
                 });
 
                 // Check if Deck has cards
@@ -187,6 +229,67 @@ document.addEventListener('DOMContentLoaded', function(event) {
         // Get ID
         let deck_id = card_overview.dataset.id
         fetchDeck(card_overview, deck_id);
+
+        // Get the Card Submission form
+        let card_submit_form = document.querySelectorAll('#card_submit.needs-validation')[0]
+
+        if (card_submit_form) {
+            card_submit_form.addEventListener('submit', function (event) {
+                if (!card_submit_form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                else {
+                    console.log("= Submitting Card = ");
+                    event.preventDefault()
+                    event.stopPropagation()
+
+                    let card_type = "";
+
+                    if (document.getElementById('fprompt').checked) {
+                        card_type = "prompt"
+                    } else if (document.getElementById('fanswer').checked) {
+                        card_type = "answer"
+                    }
+
+                    let card_content = document.getElementById("fcontent").value;
+                    let card_pick = document.getElementById("fpick").value;
+                    let card_draw = document.getElementById("fdraw").value;
+
+                    let card_json = JSON.stringify(
+                        { 'type': card_type,
+                          'content': card_content,
+                          'pick': card_pick,
+                          'draw': card_draw
+                         })
+
+                    fetch('/api/v1/decks/' + deck_id, {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: card_json
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status == "ok") {
+                            // Reset validation of card submit form
+                            card_submit_form.classList.remove('was-validated');
+                            card_submit_form.classList.add('needs-validation');
+                            fetchDeck(card_overview, deck_id);
+                        }
+                    });
+                }
+
+                card_submit_form.classList.add('was-validated')
+            });
+        }
+
     }
 
 })
