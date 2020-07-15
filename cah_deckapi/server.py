@@ -49,17 +49,28 @@ def get_deck(id, mongodb):
 
 @route('/api/v1/decks/<id:path>', method='POST')
 def add_card(id, mongodb):
+    response.content_type = "application/json"
     deck = mongodb['decks'].find_one({"_id": ObjectId(id)})
     if deck:
-        type = CardType(request.forms.get('ftype'))
-        content = str(request.forms.get('fcontent'))
-        pick = int(request.forms.get('fpick'))
-        draw = int(request.forms.get('fdraw'))
-        card = Card(type=type, content=content, pick=pick, draw=draw)
-        result = mongodb['decks'].update_one({"_id": ObjectId(id)}, {'$push': {'cards': card.to_json_obj()}})
-        redirect("/decks/" + id)
+        # noinspection PyBroadException
+        try:
+            type = CardType(request.json['type'])
+            content = str(request.json['content'])
+            pick = int(request.json['pick'])
+            draw = int(request.json['draw'])
+            card = Card(type=type, content=content, pick=pick, draw=draw)
+            result = mongodb['decks'].update_one({"_id": ObjectId(id)}, {'$push': {'cards': card.to_json_obj()}})
+            if not result.acknowledged:
+                response.status = 500
+                return '{"status": "nok", "error": "Unknown error upon inserting"}'
+            else:
+                return '{"status": "ok"}'
+        except:
+            response.status = 500
+            return '{"status": "nok", "error": "Unknown error upon inserting"}'
     else:
-        return None
+        response.code = 404
+        return '{"status": "nok", "error": "Deck not found"}'
 
 
 @route('/api/v1/decks/', method='POST')
