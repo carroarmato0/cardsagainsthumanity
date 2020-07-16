@@ -86,7 +86,10 @@ function fetchDeck(table, id) {
                         let modifiers_cell = row.insertCell();
                         if (card.type == "prompt") {
                             row.classList.add('table-dark');
-                            modifiers_cell.innerText = "Pick: " + card.pick + " Draw: " + card.draw;
+                            if (card.pick != 1 && card.draw != 1) {
+                                // These are the defaults, so not necessary to show
+                                modifiers_cell.innerText = "Pick: " + card.pick + " Draw: " + card.draw;
+                            }
                         } else {
                             row.classList.add('table-light');
                         }
