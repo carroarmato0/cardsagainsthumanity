@@ -1,6 +1,6 @@
 % rebase('base.tpl', title="CAH - DeckManager", stylesheets=stylesheets, scripts=scripts)
 
-        <div id="no_deck" class="m-5" align="center">
+        <div id="no_deck" class="m-5" style="text-align:center;">
             <span class="alert alert-danger">The requested Deck could not be found.</span>
         </div>
 
@@ -42,7 +42,7 @@
             </form>
             <hr />
 
-            <div id="no_cards" class="m-5" align="center">
+            <div id="no_cards" class="m-5" style="text-align:center;">
                 <span class="alert alert-primary">This deck has no cards. Add some!</span>
             </div>
 
