@@ -40,7 +40,7 @@ This list gives an overview of the things already accomplished, and what's remai
   * ~~Overview of Decks.~~
   * ~~Show specific Deck~~
   * Delete specific Deck
-  * Add cards to Deck
+  * ~~Add cards to Deck~~
   * Remove cards to Deck
   * Edit Cards
   * Edit Deck
