@@ -1,14 +1,15 @@
 import json
+import os
 
-from bottle import route, run, redirect, response, static_file, template, request
+from bottle import route, run, response, static_file, template, request
 from bottle_mongo import MongoPlugin
 from bson import ObjectId
+from bson.json_util import dumps
 from iso639 import languages
 
 from cah.card import Card
-from cah.deck import Deck
 from cah.cardtype import CardType
-from bson.json_util import dumps
+from cah.deck import Deck
 
 debug = True
 
@@ -126,5 +127,25 @@ def send_css(filename):
 
 
 if __name__ == '__main__':
-    plugin = MongoPlugin(uri="mongodb://127.0.0.1", db="cah", json_mongo=True)
-    run(debug=debug, host='0.0.0.0', port=8080, reloader=True, plugins=[plugin])
+    """ Default values """
+    server_address = "0.0.0.0"
+    server_port = 0
+    mongodb_address = "127.0.0.1"
+    mongodb_port = 27017
+    mongodb_db = "cah"
+    """ Try reading configuration from the environment """
+    if os.environ.get('DECKAPI_ADDRESS'):
+        server_address = os.environ.get('DECKAPI_ADDRESS')
+    if os.environ.get('DECKAPI_PORT'):
+        server_port = int(os.environ.get('DECKAPI_PORT'))
+    if os.environ.get('DECKAPI_MONGODB_ADDRESS'):
+        mongodb_address = os.environ.get('DECKAPI_MONGODB_ADDRESS')
+    if os.environ.get('DECKAPI_MONGODB_PORT'):
+        mongodb_port = int(os.environ.get('DECKAPI_MONGODB_PORT'))
+    if os.environ.get('DECKAPI_MONGODB_DB'):
+        mongodb_db = os.environ.get('DECKAPI_MONGODB_DB')
+    if os.environ.get('DECKAPI_DEBUG'):
+        debug = bool(os.environ.get('DECKAPI_DEBUG'))
+
+    plugin = MongoPlugin(uri="mongodb://" + mongodb_address + ":" + str(mongodb_port), db=mongodb_db, json_mongo=True)
+    run(debug=debug, host=server_address, port=server_port, reloader=True, plugins=[plugin])
