@@ -2,8 +2,10 @@ language: python
 python:
   - "3.8"
 # Install dependencies
-#install:
-#  - pip install -r requirements.txt
+install:
+ - pip install -r requirements.txt
+ - pip install bandit
 # command to run tests
 script:
   - pytest
+  - bandit -r -x "./venv/*,./__pycache__/*" .
