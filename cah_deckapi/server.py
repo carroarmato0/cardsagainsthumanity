@@ -127,4 +127,4 @@ def send_css(filename):
 
 if __name__ == '__main__':
     plugin = MongoPlugin(uri="mongodb://127.0.0.1", db="cah", json_mongo=True)
-    run(debug=debug, host='localhost', port=8080, reloader=True, plugins=[plugin])
+    run(debug=debug, host='0.0.0.0', port=8080, reloader=True, plugins=[plugin])
