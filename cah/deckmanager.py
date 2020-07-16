@@ -18,7 +18,7 @@ class DeckManager:
         elif uri_validator(uri):
             """ Attempt to load the json data as a url """
             try:
-                with urllib.request.urlopen(uri) as url:
+                with urllib.request.urlopen(uri) as url:  # nosec
                     data = json.loads(url.read().decode())
                     deck = json.loads(data, object_hook=dict_to_obj)
             except ValueError:
