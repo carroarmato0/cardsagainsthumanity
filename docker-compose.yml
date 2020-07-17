@@ -1,0 +1,12 @@
+version: '2.0'
+services:
+  deckapi:
+    build: .
+    environment:
+      - DECKAPI_MONGODB_ADDRESS=database
+    ports:
+      - "8080:8080"
+    links:
+      - mongodb:database
+  mongodb:
+    image: "mongo:3.6.8"
