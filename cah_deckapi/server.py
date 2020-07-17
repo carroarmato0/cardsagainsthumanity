@@ -1,7 +1,9 @@
 import json
 import os
+import pathlib
 
-from bottle import route, run, response, static_file, template, request
+import bottle
+from bottle import response, static_file, template, request, Bottle
 from bottle_mongo import MongoPlugin
 from bson import ObjectId
 from bson.json_util import dumps
@@ -13,8 +15,11 @@ from cah.deck import Deck
 
 debug = True
 
+app = Bottle()
+package_root = os.path.dirname(os.path.realpath(__file__))
 
-@route('/')
+
+@app.route('/')
 def index():
     stylesheets = []
     scripts = []
@@ -23,7 +28,7 @@ def index():
     return template('index', stylesheets=stylesheets, scripts=scripts, languages=lang)
 
 
-@route('/decks/<id:path>', method='GET')
+@app.route('/decks/<id:path>', method='GET')
 def get_deck_view(id):
     stylesheets = []
     scripts = []
@@ -31,7 +36,7 @@ def get_deck_view(id):
     return template('deck_view', stylesheets=stylesheets, scripts=scripts, deck_id=id)
 
 
-@route('/api/v1/decks/', method='GET')
+@app.route('/api/v1/decks/', method='GET')
 def get_decks(mongodb):
     response.content_type = "application/json"
     decks = []
@@ -42,13 +47,13 @@ def get_decks(mongodb):
     return dumps(decks)
 
 
-@route('/api/v1/decks/<id:path>', method='GET')
+@app.route('/api/v1/decks/<id:path>', method='GET')
 def get_deck(id, mongodb):
     response.content_type = "application/json"
     return dumps(mongodb['decks'].find_one({"_id": ObjectId(id)}))
 
 
-@route('/api/v1/decks/<id:path>', method='POST')
+@app.route('/api/v1/decks/<id:path>', method='POST')
 def add_card(id, mongodb):
     response.content_type = "application/json"
     deck = mongodb['decks'].find_one({"_id": ObjectId(id)})
@@ -74,7 +79,7 @@ def add_card(id, mongodb):
         return '{"status": "nok", "error": "Deck not found"}'
 
 
-@route('/api/v1/decks/', method='POST')
+@app.route('/api/v1/decks/', method='POST')
 def add_deck(mongodb):
     response.content_type = "application/json"
 
@@ -99,7 +104,7 @@ def add_deck(mongodb):
             return '{"status": "ok", "id": "' + str(result.inserted_id) + '"}'
 
 
-@route('/api/v1/decks/<id:path>', method='DELETE')
+@app.route('/api/v1/decks/<id:path>', method='DELETE')
 def delete_deck(id, mongodb):
     response.content_type = "application/json"
     result = mongodb['decks'].delete_one({'_id': ObjectId(id)})
@@ -111,25 +116,25 @@ def delete_deck(id, mongodb):
         return '{"status": "nok", "error": "Deck not found"}'
 
 
-@route('/js/<filename:path>', method='GET')
+@app.route('/js/<filename:path>', method='GET')
 def send_js(filename):
-    return static_file(filename, root='resources/js/')
+    return static_file(filename, root=package_root + '/resources/js/')
 
 
-@route('/css/<filename:path>', method='GET')
+@app.route('/css/<filename:path>', method='GET')
 def send_css(filename):
-    return static_file(filename, root='resources/css/')
+    return static_file(filename, root=package_root + '/resources/css/')
 
 
-@route('/favicon/<filename:path>', method='GET')
+@app.route('/favicon/<filename:path>', method='GET')
 def send_css(filename):
-    return static_file(filename, root='resources/favicon/')
+    return static_file(filename, root=package_root + '/resources/favicon/')
 
 
 if __name__ == '__main__':
     """ Default values """
     server_address = "0.0.0.0"
-    server_port = 0
+    server_port = 8080
     mongodb_address = "127.0.0.1"
     mongodb_port = 27017
     mongodb_db = "cah"
@@ -148,4 +153,5 @@ if __name__ == '__main__':
         debug = bool(os.environ.get('DECKAPI_DEBUG'))
 
     plugin = MongoPlugin(uri="mongodb://" + mongodb_address + ":" + str(mongodb_port), db=mongodb_db, json_mongo=True)
-    run(debug=debug, host=server_address, port=server_port, reloader=True, plugins=[plugin])
+    bottle.TEMPLATE_PATH.insert(0, package_root + "/views")
+    app.run(debug=debug, host=server_address, port=server_port, reloader=True, plugins=[plugin])
