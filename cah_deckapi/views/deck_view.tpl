@@ -18,8 +18,8 @@
                         <label class="form-label" for="ftype">Type: </label>
                         <input class="form-check-input" type="radio" name="ftype" checked id="fprompt">
                         <label class="form-check-label" for="fprompt">Prompt</label>
-                        <input class="form-check-input" type="radio" name="ftype" id="fanswer">
-                        <label class="form-check-label" for="fanswer">Answer</label>
+                        <input class="form-check-input" type="radio" name="ftype" id="fresponse">
+                        <label class="form-check-label" for="fresponse">Response</label>
                     </div>
                     <div class="col-auto">
                         <input class="form-control" type="text" id="fcontent" name="fcontent" required placeholder="Content" />

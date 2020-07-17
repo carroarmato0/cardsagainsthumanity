@@ -17,7 +17,7 @@ function fetchDeck(table, id) {
                 if (document.getElementById("fprompt").checked) {
                     document.getElementById('fpick').disabled = false;
                     document.getElementById('fdraw').disabled = false;
-                } else if (document.getElementById("fanswer").checked) {
+                } else if (document.getElementById("fresponse").checked) {
                     document.getElementById('fpick').disabled = true;
                     document.getElementById('fdraw').disabled = true;
                 }
@@ -52,7 +52,7 @@ function fetchDeck(table, id) {
                         document.getElementById('fdraw').value = 1;
                     }
                 });
-                document.getElementById("fanswer").addEventListener('change', function(event) {
+                document.getElementById("fresponse").addEventListener('change', function(event) {
                     document.getElementById('fpick').disabled = true;
                     document.getElementById('fdraw').disabled = true;
                     if (document.getElementById('fpick').value > 0) {
@@ -141,7 +141,7 @@ function fetchDecks(table) {
     fetch('/api/v1/decks/')
       .then(response => response.json())
       .then(function(data) {
-            if (data.length > 0) {
+            if (Object.keys(data).length > 0) {
                 console.log("Found " + data.length + " decks");
                 // Hide the No Deck message
                 document.getElementById("no_decks").style.display='none';
@@ -251,8 +251,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
                     if (document.getElementById('fprompt').checked) {
                         card_type = "prompt"
-                    } else if (document.getElementById('fanswer').checked) {
-                        card_type = "answer"
+                    } else if (document.getElementById('fresponse').checked) {
+                        card_type = "response"
                     }
 
                     let card_content = document.getElementById("fcontent").value;
