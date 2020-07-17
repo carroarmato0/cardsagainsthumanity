@@ -44,7 +44,9 @@
         </form>
         <hr/>
 
-        <span id="no_decks">No decks found.</span>
+        <div id="no_decks" class="m-5" style="text-align:center;">
+            <span class="alert alert-primary">No decks could be found.</span>
+        </div>
 
         <table id="deck_overview" class="table table-hover" style="display: none;">
             <thead>
