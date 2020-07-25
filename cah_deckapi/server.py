@@ -1,6 +1,8 @@
 import json
+import ntpath
 import os
-import pathlib
+import io
+import tempfile
 
 import bottle
 from bottle import response, static_file, template, request, Bottle
@@ -51,6 +53,16 @@ def get_decks(mongodb):
 def get_deck(id, mongodb):
     response.content_type = "application/json"
     return dumps(mongodb['decks'].find_one({"_id": ObjectId(id)}))
+
+
+@app.route('/api/v1/decks/export', method='GET')
+def export_decks(mongodb):
+    decks = list(mongodb['decks'].find({}, {"_id": 0}))
+    with tempfile.NamedTemporaryFile(delete=True) as file:
+        file.seek(0)
+        file.write(bytes(dumps(decks), 'UTF-8'))
+        file.flush()
+        return static_file(ntpath.basename(file.name), root='/tmp/', download="decks-export.json")
 
 
 @app.route('/api/v1/decks/<id:path>', method='POST')
