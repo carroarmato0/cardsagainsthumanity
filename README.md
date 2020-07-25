@@ -39,14 +39,14 @@ This list gives an overview of the things already accomplished, and what's remai
 * Implement the DeckManager
   * ~~Overview of Decks.~~
   * ~~Show specific Deck~~
-  * Delete specific Deck
+  * ~~Delete specific Deck~~
   * ~~Add cards to Deck~~
   * Remove cards to Deck
   * Edit Cards
   * Edit Deck
-  * Export/Import of Decks
+  * ~~Export/Import of Decks~~
   * Finish design
-  * Docker Container
+  * ~~Docker Container~~
   * Functional tests
 * Implement the basic game.
   * Lobby
