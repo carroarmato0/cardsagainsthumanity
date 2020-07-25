@@ -43,7 +43,7 @@ def get_decks(mongodb):
     for deck in mongodb['decks'].find():
         decks.append(deck)
     if not decks:
-        return dumps(json.dumps('{}'))
+        return dumps([])
     return dumps(decks)
 
 
