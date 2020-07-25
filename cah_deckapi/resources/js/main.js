@@ -235,6 +235,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
         // Get the Card Submission form
         let card_submit_form = document.querySelectorAll('#card_submit.needs-validation')[0]
+        let delete_deck_btn = document.getElementById('delete_deck_btn');
 
         if (card_submit_form) {
             card_submit_form.addEventListener('submit', function (event) {
@@ -289,7 +290,30 @@ document.addEventListener('DOMContentLoaded', function(event) {
                     });
                 }
 
-                card_submit_form.classList.add('was-validated')
+                card_submit_form.classList.add('was-validated');
+            });
+
+            delete_deck_btn.addEventListener('click', function(event) {
+                if (confirm('Are you sure you want to delete this deck?')) {
+                    console.log('Deleting Deck: ' + deck_id);
+
+                    fetch('/api/v1/decks/' + deck_id, {
+                        method: 'delete',
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status == "ok") {
+                            window.location.replace('/');
+                        } else {
+                            console.log('An error occurred deleting the deck')
+                        }
+                    });
+                }
             });
         }
 

@@ -36,7 +36,7 @@
                     </div>
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary">Add</button>
-                        <button type="submit" class="btn btn-danger">Delete Deck</button>
+                        <a id="delete_deck_btn" class="btn btn-danger" data-id="{{ deck_id }}" href="#" role="button">Delete Deck</a>
                     </div>
                 </div>
             </form>
