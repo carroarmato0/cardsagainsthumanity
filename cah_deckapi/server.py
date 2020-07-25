@@ -1,6 +1,7 @@
 import json
 import ntpath
 import os
+import re
 import tempfile
 from json import JSONDecodeError
 
@@ -17,8 +18,25 @@ from cah.deck import Deck
 
 debug = True
 
+consistent_underscore_regex = r"(?<=(\$|\s))(_+)(?!\w)"
+
 app = Bottle()
 package_root = os.path.dirname(os.path.realpath(__file__))
+
+
+def conform_content(text):
+    result = ""
+    """ Trim """
+    result = text.strip()
+    """ Capitalize """
+    result = result.capitalize()
+    """ End punctuation """
+    if result[-1] not in ('?', '!', '.', '¡', '¿'):
+        result = result + "."
+    """ Shorten blank characters (_) """
+    if "_" in result:
+        result = re.sub(consistent_underscore_regex, "____", result, 0, re.MULTILINE | re.DOTALL)
+    return result
 
 
 @app.route('/')
@@ -98,7 +116,7 @@ def import_decks(mongodb):
                 for card_entry in entry['cards']:
                     card = Card(
                         type=CardType(card_entry['type']),
-                        content=str(card_entry['content']),
+                        content=conform_content(str(card_entry['content'])),
                         pick=int(card_entry['pick']),
                         draw=int(card_entry['draw'])
                     )
@@ -141,7 +159,7 @@ def add_card(id, mongodb):
         # noinspection PyBroadException
         try:
             type = CardType(request.json['type'])
-            content = str(request.json['content'])
+            content = conform_content(str(request.json['content']))
             pick = int(request.json['pick'])
             draw = int(request.json['draw'])
             card = Card(type=type, content=content, pick=pick, draw=draw)
