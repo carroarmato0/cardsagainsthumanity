@@ -38,7 +38,27 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="submit" class="btn btn-success">Add</button>
+                </div>
+            </div>
+        </form>
+        </br>
+        <form id="import_export_submit" class="row gy-2 gx-3 align-items-center action="">
+            <div class="row g-1">
+                <div class="col-auto">
+                    <div class="form-file">
+                      <input id="import_input" type="file" class="form-file-input" required>
+                      <label class="form-file-label" for="import_input">
+                        <span class="form-file-text">Import Deck(s)...</span>
+                        <span class="form-file-button">Browse</span>
+                      </label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button id="import_btn" type="submit" class="btn btn-primary">Import</button>
+                </div>
+                <div class="col-auto">
+                    <a class="btn btn-info" href="/api/v1/decks/export" role="button">Export</a>
                 </div>
             </div>
         </form>

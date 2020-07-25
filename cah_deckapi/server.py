@@ -3,6 +3,7 @@ import ntpath
 import os
 import io
 import tempfile
+from json import JSONDecodeError
 
 import bottle
 from bottle import response, static_file, template, request, Bottle
@@ -53,6 +54,74 @@ def get_decks(mongodb):
 def get_deck(id, mongodb):
     response.content_type = "application/json"
     return dumps(mongodb['decks'].find_one({"_id": ObjectId(id)}))
+
+
+@app.route('/api/v1/decks/import', method='POST')
+def import_decks(mongodb):
+    response.content_type = "application/json"
+
+    '''' Try to convert the payload to JSON '''
+    json_request = None
+    try:
+        json_request = request.json
+    except JSONDecodeError:
+        response.status = 400
+        return '{"status": "nok", "error": "Malformed JSON"}'
+
+    ''' Check if we're dealing with an array or single submission '''
+    ''' Single JSON -> dict, JSON array -> list of dicts '''
+    ''' Force dict to list to simplify code '''
+    if isinstance(json_request, dict):
+        json_request = [json_request]
+
+    ''' Check for empty payload '''
+    if len(json_request) == 0:
+        response.status = 400
+        return '{"status": "nok", "error": "Invalid deck submitted"}'
+
+    decks = []
+
+    ''' Loop through objects and test for correctness '''
+    for entry in json_request:
+        # noinspection PyBroadException
+        try:
+            ''' Attempt to create a Deck object '''
+            ''' cards initially empty because we are going to evaluate them in the next step '''
+            deck = Deck(
+                name=entry['name'],
+                description=entry['description'],
+                lang=entry['lang'],
+                cards=[]
+            )
+
+            ''' Attempt to create Card objects '''
+            if len(entry['cards']) > 0:
+                for card_entry in entry['cards']:
+                    card = Card(
+                        type=CardType(card_entry['type']),
+                        content=str(card_entry['content']),
+                        pick=int(card_entry['pick']),
+                        draw=int(card_entry['draw'])
+                    )
+                    deck.cards.append(card)
+
+            ''' Looks fine, we add it to the validated decks list '''
+            decks.append(deck)
+        except:
+            response.status = 400
+            return '{"status": "nok", "error": "Invalid deck submitted"}'
+
+    if decks is not None and len(decks) > 0:
+        deck: Deck
+        result = mongodb['decks'].insert_many(deck.to_json_obj() for deck in decks)
+        if not result.acknowledged:
+            response.status = 500
+            return '{"status": "nok", "error": "Unknown error upon inserting"}'
+        else:
+            id_list = []
+            for id in result.inserted_ids:
+                id_list.append(str(id))
+            return '{"status": "ok", "ids": ' + json.dumps(id_list) + '}'
 
 
 @app.route('/api/v1/decks/export', method='GET')

@@ -319,4 +319,47 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
     }
 
+    let export_import_form = document.getElementById('import_export_submit');
+    if (export_import_form) {
+        export_import_form.addEventListener('submit', function (event) {
+            if (!export_import_form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            else {
+                event.preventDefault()
+                event.stopPropagation()
+
+                import_input = document.getElementById('import_input')
+
+                fetch('/api/v1/decks/import', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: import_input.files[0]
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status == "ok") {
+                        console.log('Import successful')
+                        // Reset validation of card submit form
+                        export_import_form.classList.remove('was-validated');
+                        export_import_form.classList.add('needs-validation');
+                        export_import_form.reset();
+                        fetchDecks(deck_overview);
+                    } else {
+                        console.log('Import failed')
+                    }
+                });
+
+            }
+        })
+    }
+
 })
