@@ -1,7 +1,6 @@
 import json
 import ntpath
 import os
-import io
 import tempfile
 from json import JSONDecodeError
 
