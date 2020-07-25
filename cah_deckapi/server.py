@@ -95,14 +95,22 @@ def add_card(id, mongodb):
 def add_deck(mongodb):
     response.content_type = "application/json"
 
+    '''' Try to convert the payload to JSON '''
+    json_request = None
+    try:
+        json_request = request.json
+    except JSONDecodeError:
+        response.status = 400
+        return '{"status": "nok", "error": "Malformed JSON"}'
+
     deck = None
     # noinspection PyBroadException
     try:
         deck = Deck(
-            name=request.json['name'],
-            description=request.json['description'],
-            lang=request.json['lang'],
-            cards=request.json['cards']
+            name=json_request['name'],
+            description=json_request['description'],
+            lang=json_request['lang'],
+            cards=json_request['cards']
         )
     except:
         response.status = 400
