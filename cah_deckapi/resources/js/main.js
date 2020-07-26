@@ -236,6 +236,24 @@ document.addEventListener('DOMContentLoaded', function(event) {
         // Get the Card Submission form
         let card_submit_form = document.querySelectorAll('#card_submit.needs-validation')[0]
         let delete_deck_btn = document.getElementById('delete_deck_btn');
+        let card_content_input = document.getElementById('fcontent');
+        let card_pick_input = document.getElementById('fpick');
+        let card_draw_input = document.getElementById('fdraw');
+        let card_promp_radio = document.getElementById('fprompt');
+
+        card_content_input.addEventListener('keydown', function(event){
+            if (card_promp_radio.checked) {
+                let regex = /(?<=(\$|\s))(_+)(?!\w)/gm;
+                let occurrences = (card_content_input.value.match(regex) || []).length;
+                if (occurrences > 1) {
+                    card_pick_input.value = occurrences;
+                    card_draw_input.value = occurrences;
+                } else {
+                    card_pick_input.value = 1;
+                    card_draw_input.value = 1;
+                }
+            }
+        });
 
         if (card_submit_form) {
             card_submit_form.addEventListener('submit', function (event) {
