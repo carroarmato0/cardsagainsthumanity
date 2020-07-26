@@ -74,8 +74,9 @@ function fetchDeck(table, id) {
                     // Reveal the Card table
                     table.style.display='';
                     // Loop through the cards and add elements
-                    data.cards.forEach(function(card) {
+                    data.cards.forEach(function(card, index) {
                         //console.log(card);
+                        //console.log(index);
                         let row = tbody.insertRow();
                         let type_cell = row.insertCell();
                         type_cell.classList.add('align-middle');
@@ -116,6 +117,45 @@ function fetchDeck(table, id) {
                         delete_button.innerText="Delete";
                         delete_button.classList.add('btn');
                         delete_button.classList.add('btn-danger');
+                        delete_button.dataset.deck_id = id;
+                        delete_button.dataset.card_type = card.type;
+                        delete_button.dataset.card_content = card.content;
+                        delete_button.dataset.card_pick = card.pick;
+                        delete_button.dataset.card_draw = card.draw;
+                        delete_button.addEventListener('click', function(event){
+                            let deck_id = event.target.dataset.deck_id;
+                            let card_type = event.target.dataset.card_type;
+                            let card_content = event.target.dataset.card_content;
+                            let card_pick = event.target.dataset.card_pick;
+                            let card_draw = event.target.dataset.card_draw;
+                            let card_json = JSON.stringify(
+                                { 'type': card_type,
+                                  'content': card_content,
+                                  'pick': card_pick,
+                                  'draw': card_draw
+                                 })
+                            console.log("= Deleting " + card_json + " from deck " + deck_id + " =");
+                            fetch('/api/v1/decks/' + deck_id + '/cards', {
+                                method: 'delete',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: card_json
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.status == "ok") {
+                                    let parent_row = event.target.closest('tr');
+                                    parent_row.parentNode.removeChild(parent_row);
+                                    fetchDeck(card_overview, deck_id);
+                                }
+                            });
+                        });
                         action_cell_btn_group2.append(delete_button);
 
                         action_cell_btn_toolbar.append(action_cell_btn_group1);
@@ -125,6 +165,8 @@ function fetchDeck(table, id) {
                  } else {
                     // Show no cards message
                     document.getElementById("no_cards").style.display='';
+                    // Conceal cards table
+                    table.style.display='none';
                  }
             } else {
                 // Show the No Deck message

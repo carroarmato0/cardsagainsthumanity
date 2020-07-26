@@ -175,6 +175,43 @@ def add_card(id, mongodb):
         return '{"status": "nok", "error": "Deck not found"}'
 
 
+@app.route('/api/v1/decks/<deck_id>/cards', method='DELETE')
+def delete_card(deck_id, mongodb):
+    response.content_type = "application/json"
+    deck = mongodb['decks'].find_one({"_id": ObjectId(deck_id)})
+    if deck:
+        '''' Try to convert the payload to JSON '''
+        json_request = None
+        try:
+            json_request = request.json
+        except JSONDecodeError:
+            response.status = 400
+            return '{"status": "nok", "error": "Malformed JSON"}'
+
+        card = None
+        try:
+            ''' Attempt to create a Card object '''
+            card = Card(
+                type=CardType(json_request['type']),
+                content=str(json_request['content']),
+                pick=int(json_request['pick']),
+                draw=int(json_request['draw'])
+            )
+        except:
+            response.status = 400
+            return '{"status": "nok", "error": "Malformed Card"}'
+
+        result = mongodb['decks'].update_one({"_id": ObjectId(deck_id)}, {'$pull': {'cards': card.to_json_obj()}})
+        if not result.acknowledged:
+            response.status = 500
+            return '{"status": "nok", "error": "Unknown error upon deleting"}'
+        else:
+            return '{"status": "ok"}'
+    else:
+        response.code = 404
+        return '{"status": "nok", "error": "Deck not found"}'
+
+
 @app.route('/api/v1/decks/', method='POST')
 def add_deck(mongodb):
     response.content_type = "application/json"
