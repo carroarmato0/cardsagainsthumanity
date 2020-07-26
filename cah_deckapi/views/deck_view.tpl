@@ -35,7 +35,7 @@
                         <input type="number" id="fdraw" name="fdraw" size="2" min="0" value="1">
                     </div>
                     <div class="col-auto">
-                        <button type="submit" class="btn btn-primary">Add</button>
+                        <button id="add_card_btn" type="submit" class="btn btn-primary">Add</button>
                         <a id="delete_deck_btn" class="btn btn-danger" data-id="{{ deck_id }}" href="#" role="button">Delete Deck</a>
                     </div>
                 </div>

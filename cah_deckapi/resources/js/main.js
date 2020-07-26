@@ -240,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
         let card_pick_input = document.getElementById('fpick');
         let card_draw_input = document.getElementById('fdraw');
         let card_promp_radio = document.getElementById('fprompt');
+        let card_submit_btn = document.getElementById('add_card_btn');
 
         card_content_input.addEventListener('keydown', function(event){
             if (card_promp_radio.checked) {
@@ -310,6 +311,13 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
                 card_submit_form.classList.add('was-validated');
             });
+
+            card_submit_form.addEventListener('keyup' ,function(event){
+                if (event.code === 'Enter') {
+                    event.preventDefault();
+                    card_submit_btn.click();
+                }
+            })
 
             delete_deck_btn.addEventListener('click', function(event) {
                 if (confirm('Are you sure you want to delete this deck?')) {
