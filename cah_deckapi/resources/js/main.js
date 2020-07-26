@@ -99,6 +99,7 @@ function fetchDeck(table, id) {
 
                         let action_cell_btn_toolbar = document.createElement('div');
                         action_cell_btn_toolbar.classList.add('btn-toolbar');
+                        action_cell_btn_toolbar.classList.add('float-right');
 
                         let action_cell_btn_group1 = document.createElement('div');
                         action_cell_btn_group1.classList.add('btn-group');
