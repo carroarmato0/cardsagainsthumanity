@@ -28,8 +28,6 @@ def conform_content(text):
     result = ""
     """ Trim """
     result = text.strip()
-    """ Capitalize """
-    result = result.capitalize()
     """ End punctuation """
     if result[-1] not in ('?', '!', '.', '¡', '¿'):
         result = result + "."
