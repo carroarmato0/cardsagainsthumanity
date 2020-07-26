@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 card_submit_form.classList.add('was-validated');
             });
 
-            card_submit_form.addEventListener('keyup' ,function(event){
+            card_submit_form.addEventListener('keydown' ,function(event){
                 if (event.code === 'Enter') {
                     event.preventDefault();
                     card_submit_btn.click();
