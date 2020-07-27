@@ -78,18 +78,44 @@ function fetchDeck(table, id) {
                         //console.log(card);
                         //console.log(index);
                         let row = tbody.insertRow();
+                        row.addEventListener('mouseover', function(event) {
+                            let current_row = event.currentTarget;
+                            // Get associated delete button
+                            let delete_btn = current_row.querySelector('div .btn-toolbar');
+                            console.log(delete_btn);
+                            delete_btn.style="visibility: visible;";
+                        });
+                        row.addEventListener('mouseout', function(event) {
+                            let current_row = event.currentTarget;
+                            // Get associated delete button
+                            let delete_btn = current_row.querySelector('div .btn-toolbar');
+                            delete_btn.style="visibility: hidden;";
+                        });
                         let type_cell = row.insertCell();
+                        type_cell.setAttribute('name','type');
                         type_cell.classList.add('align-middle');
                         type_cell.innerText = card.type;
                         let content_cell = row.insertCell();
+                        content_cell.setAttribute('name','content');
                         content_cell.classList.add('align-middle');
                         content_cell.innerText = card.content;
                         let modifiers_cell = row.insertCell();
+                        modifiers_cell.setAttribute('name','modifiers');
                         if (card.type == "prompt") {
                             row.classList.add('table-dark');
-                            if (card.pick != 1 && card.draw != 1) {
-                                // These are the defaults, so not necessary to show
-                                modifiers_cell.innerText = "Pick: " + card.pick + " Draw: " + card.draw;
+                            // Only show if either pick or draw deviates from the default
+                            if (card.pick != 1 || card.draw != 1) {
+                                let pick_button = document.createElement('span');
+                                pick_button.classList.add('btn');
+                                pick_button.classList.add('btn-primary');
+                                pick_button.classList.add('mr-2');
+                                pick_button.innerHTML="Pick: <span name=\"pick\" class=\"badge bg-secondary\">" + card.pick + "</span>";
+                                let draw_button = document.createElement('span');
+                                draw_button.classList.add('btn');
+                                draw_button.classList.add('btn-primary');
+                                draw_button.innerHTML="Draw: <span name=\"draw\" class=\"badge bg-secondary\">" + card.draw + "</span>";
+                                modifiers_cell.appendChild(pick_button);
+                                modifiers_cell.appendChild(draw_button);
                             }
                         } else {
                             row.classList.add('table-light');
@@ -100,19 +126,10 @@ function fetchDeck(table, id) {
                         let action_cell_btn_toolbar = document.createElement('div');
                         action_cell_btn_toolbar.classList.add('btn-toolbar');
                         action_cell_btn_toolbar.classList.add('float-right');
+                        action_cell_btn_toolbar.style='visibility: hidden;';
 
                         let action_cell_btn_group1 = document.createElement('div');
                         action_cell_btn_group1.classList.add('btn-group');
-                        action_cell_btn_group1.classList.add('mr-2');
-
-                        let edit_button = document.createElement('button');
-                        edit_button.innerText="Edit";
-                        edit_button.classList.add('btn');
-                        edit_button.classList.add('btn-warning');
-                        action_cell_btn_group1.append(edit_button);
-
-                        let action_cell_btn_group2 = document.createElement('div');
-                        action_cell_btn_group2.classList.add('btn-group');
 
                         let delete_button = document.createElement('button');
                         delete_button.innerText="Delete";
@@ -157,10 +174,9 @@ function fetchDeck(table, id) {
                                 }
                             });
                         });
-                        action_cell_btn_group2.append(delete_button);
+                        action_cell_btn_group1.append(delete_button);
 
                         action_cell_btn_toolbar.append(action_cell_btn_group1);
-                        action_cell_btn_toolbar.append(action_cell_btn_group2);
                         action_cell.append(action_cell_btn_toolbar);
                      });
                  } else {
