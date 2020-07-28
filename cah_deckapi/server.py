@@ -268,7 +268,7 @@ def send_css(filename):
 
 
 @app.route('/favicon/<filename:path>', method='GET')
-def send_css(filename):
+def send_favicon(filename):
     return static_file(filename, root=package_root + '/resources/favicon/')
 
 
