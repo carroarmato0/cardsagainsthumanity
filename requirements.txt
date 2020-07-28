@@ -2,4 +2,4 @@ bottle==0.12.18
 bottle-mongo==0.3.0
 pymongo==3.10.1
 iso-639==0.4.5
-setuptools~=49.0.0
+setuptools~=49.2.0
