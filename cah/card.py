@@ -1,7 +1,6 @@
 import json
 
 from cah.cardtype import CardType
-from cah.utils import convert_to_dict
 
 
 class Card:

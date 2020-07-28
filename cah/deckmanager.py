@@ -3,7 +3,7 @@ import urllib.parse
 import urllib.request
 
 from cah.deck import Deck
-from cah.utils import uri_validator, dict_to_obj, convert_to_dict, convert_to_dict_with_meta
+from cah.utils import uri_validator, dict_to_obj, convert_to_dict_with_meta
 
 
 class DeckManager:

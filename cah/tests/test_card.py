@@ -1,4 +1,3 @@
-import json
 from unittest import TestCase
 from cah.card import Card
 from cah.cardtype import CardType
