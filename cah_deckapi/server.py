@@ -15,6 +15,7 @@ from iso639 import languages
 from cah.card import Card
 from cah.cardtype import CardType
 from cah.deck import Deck
+from cah_deckapi.CorsPlugin import EnableCORS
 
 debug = True
 
@@ -293,6 +294,7 @@ if __name__ == '__main__':
     if os.environ.get('DECKAPI_DEBUG'):
         debug = bool(os.environ.get('DECKAPI_DEBUG'))
 
-    plugin = MongoPlugin(uri="mongodb://" + mongodb_address + ":" + str(mongodb_port), db=mongodb_db, json_mongo=True)
+    mongo_plugin = MongoPlugin(uri="mongodb://" + mongodb_address + ":" + str(mongodb_port), db=mongodb_db, json_mongo=True)
+    cors_plugin = EnableCORS()
     bottle.TEMPLATE_PATH.insert(0, package_root + "/views")
-    app.run(debug=debug, host=server_address, port=server_port, reloader=True, plugins=[plugin])
+    app.run(debug=debug, host=server_address, port=server_port, reloader=True, plugins=[mongo_plugin, cors_plugin])
