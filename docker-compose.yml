@@ -3,6 +3,7 @@ services:
   deckapi:
     build: .
     environment:
+      - MODULE=cah_deckapi
       - DECKAPI_MONGODB_ADDRESS=database
     ports:
       - "8080:8080"
@@ -10,3 +11,12 @@ services:
       - mongodb:database
   mongodb:
     image: "mongo:3.6.8"
+  game:
+    build: .
+    environment:
+      - MODULE=cah_gameinstance
+      - DECKAPI=deckapi
+    ports:
+      - "8081:8081"
+    links:
+      - deckapi:deckapi
