@@ -17,6 +17,7 @@ setup(name='Cah',
       install_requires=[
           'bottle',
           'bottle-mongo',
+          'bottle-websocket',
           'pymongo',
           'iso-639',
       ],
