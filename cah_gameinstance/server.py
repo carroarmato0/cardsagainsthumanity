@@ -167,12 +167,12 @@ if __name__ == '__main__':
     server_address = "0.0.0.0"
     server_port = 8081
     """ Try reading configuration from the environment """
-    if os.environ.get('ADDRESS'):
-        server_address = os.environ.get('ADDRESS')
-    if os.environ.get('PORT'):
-        server_port = int(os.environ.get('PORT'))
-    if os.environ.get('DEBUG'):
-        debug = bool(os.environ.get('DEBUG'))
+    if os.environ.get('GAMEINSTANCE_ADDRESS'):
+        server_address = os.environ.get('GAMEINSTANCE_ADDRESS')
+    if os.environ.get('GAMEINSTANCE_PORT'):
+        server_port = int(os.environ.get('GAMEINSTANCE_PORT'))
+    if os.environ.get('GAMEINSTANCE_DEBUG'):
+        debug = bool(os.environ.get('GAMEINSTANCE_DEBUG'))
 
     bottle.TEMPLATE_PATH.insert(0, package_root + "/views")
     app.run(debug=debug, host=server_address, port=server_port, reloader=True, server=GeventWebSocketServer)
