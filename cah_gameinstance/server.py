@@ -56,7 +56,7 @@ def generate_state():
     state['players'] = player_state
     state['game_phase'] = game_phase
 
-    return json.dumps(state);
+    return json.dumps(state)
 
 
 def broadcast_message(data):
