@@ -11,14 +11,16 @@ ENV                     DECKAPI_MONGODB_PORT    27017
 ENV                     DECKAPI_MONGODB_DB      "cah"
 ENV                     DECKAPI_DEBUG           true
 
-ENV                     GAMEINSTANCE_ADDRESS    "0.0.0.0"
-ENV                     GAMEINSTANCE_PORT       8081
-ENV                     GAMEINSTANCE_DEBUG      true
+ENV                     GAMEINSTANCE_ADDRESS        "0.0.0.0"
+ENV                     GAMEINSTANCE_PORT           8081
+ENV                     GAMEINSTANCE_DEBUG          true
+ENV                     GAMEINSTANCE_DECKAPI_URI    "'http://' + window.location.hostname + ':8080/api/v1'"
+ENV                     GAMEINSTANCE_WEBSOCKET_URI  "'ws://' + window.location.host + '/ws'"
 
-ENV                     VIRTUAL_ENV             "/opt/venv"
+ENV                     VIRTUAL_ENV                 "/opt/venv"
 
 RUN python3 -m venv ${VIRTUAL_ENV}
-ENV                     PATH                    "${VIRTUAL_ENV}/bin:${PATH}"
+ENV                     PATH                        "${VIRTUAL_ENV}/bin:${PATH}"
 
 COPY cah                /app/cah
 COPY cah_deckapi        /app/cah_deckapi

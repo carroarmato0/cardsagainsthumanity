@@ -147,6 +147,11 @@ def websocket_handler(ws):
             '''players.remove(player)'''
 
 
+@app.route('/js/logic.js', method='GET')
+def send_logic_js():
+    return bottle.template('logic_js', deckapi_uri=deckapi_uri, websocket_uri=websocket_uri)
+
+
 @app.route('/js/<filename:path>', method='GET')
 def send_js(filename):
     return static_file(filename, root=package_root + '/resources/js/')
@@ -166,6 +171,8 @@ if __name__ == '__main__':
     """ Default values """
     server_address = "0.0.0.0"
     server_port = 8081
+    deckapi_uri = "'http://' + window.location.hostname + ':8080/api/v1'"
+    websocket_uri = "'ws://' + window.location.host + '/ws'"
     """ Try reading configuration from the environment """
     if os.environ.get('GAMEINSTANCE_ADDRESS'):
         server_address = os.environ.get('GAMEINSTANCE_ADDRESS')
@@ -173,6 +180,10 @@ if __name__ == '__main__':
         server_port = int(os.environ.get('GAMEINSTANCE_PORT'))
     if os.environ.get('GAMEINSTANCE_DEBUG'):
         debug = bool(os.environ.get('GAMEINSTANCE_DEBUG'))
+    if os.environ.get('GAMEINSTANCE_DECKAPI_URI'):
+        deckapi_uri = str(os.environ.get('GAMEINSTANCE_DECKAPI_URI'))
+    if os.environ.get('GAMEINSTANCE_WEBSOCKET_URI'):
+        websocket_uri = str(os.environ.get('GAMEINSTANCE_WEBSOCKET_URI'))
 
     bottle.TEMPLATE_PATH.insert(0, package_root + "/views")
     app.run(debug=debug, host=server_address, port=server_port, reloader=True, server=GeventWebSocketServer)

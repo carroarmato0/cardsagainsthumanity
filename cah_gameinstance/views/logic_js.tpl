@@ -1,9 +1,10 @@
-let deckapi = "http://" + window.location.hostname + ":8080/api/v1"
+let deckapi = {{ !deckapi_uri }};
+let websocket_endpoint = {{ !websocket_uri }};
 let username = undefined;
 let game_phase = undefined;
 
 // Create WebSocket connection.
-let socket = new WebSocket('ws://' + window.location.host + '/ws');
+let socket = new WebSocket(websocket_endpoint);
 
 function set_cookie(data) {
     console.log("= Storing the server cookie =");
