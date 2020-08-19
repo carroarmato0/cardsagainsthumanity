@@ -1,7 +1,8 @@
 let deckapi = {{ !deckapi_uri }};
 let websocket_endpoint = {{ !websocket_uri }};
-let username = undefined;
-let game_phase = undefined;
+let username;
+let game_phase;
+let amount_of_players = 0;
 
 // Create WebSocket connection.
 let socket = new WebSocket(websocket_endpoint);
@@ -54,6 +55,7 @@ function updatePlayerList(players) {
     let player_list = document.createElement("ul");
     player_list.classList.add("list-group");
     let players_array = eval(players);
+    amount_of_players = 0;
     for (var key in players_array) {
         let player_element = document.createElement("li");
         player_element.classList.add("list-group-item");
@@ -62,8 +64,8 @@ function updatePlayerList(players) {
         player_element.classList.add("align-items-center");
         player_element.innerHTML = key + (players_array[key].isAdmin ? "<b>Admin</b>" : "") + "<span class=\"badge bg-primary rounded-pill\">" + players_array[key].points + "</span>";
         player_list.appendChild(player_element);
+        amount_of_players++;
     }
-
     players_overview.appendChild(player_list);
 }
 
@@ -78,7 +80,7 @@ function evaluateIfGameCanStart() {
         }
     }
 
-    if (selected_decks.length > 0) {
+    if (selected_decks.length > 0 && amount_of_players > 1) {
         game_start_btn.disabled = false;
         game_start_btn.classList.remove('btn-secondary');
         game_start_btn.classList.add('btn-success');
@@ -98,8 +100,11 @@ function displayGameSetup(state, isAdmin) {
     let game_setup_div = document.getElementById("game_setup");
     game_setup_div.style.display = "";
     let deck_selection_div = document.getElementById("deck_selection");
+    let game_controls = document.getElementById("game_controls");
 
     if (isAdmin) {
+        game_controls.style.display = "";
+
         // Fetch available decks from DeckAPI
         console.log("= Fetching Available Decks =");
         fetch(deckapi + '/decks/')

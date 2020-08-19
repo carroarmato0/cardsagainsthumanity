@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="row">
-                <div id="game_controls">
+                <div id="game_controls" style="display: none;">
                     <button id="game_start_btn" class="btn btn-secondary mb-3 form-control" disabled>Start Game</button>
                 </div>
             </div>
