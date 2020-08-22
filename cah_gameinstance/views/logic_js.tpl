@@ -48,6 +48,7 @@ function identify_player(data) {
     }
 }
 
+// Update the players list
 function updatePlayerList(players) {
     let players_overview = document.getElementById("players_overview");
     // Clear out any previous content
@@ -69,6 +70,7 @@ function updatePlayerList(players) {
     players_overview.appendChild(player_list);
 }
 
+// Verify if all the conditions are met to be able to start the game
 function evaluateIfGameCanStart() {
     console.log("= Evaluating start game preconditions =");
     let game_start_btn = document.getElementById("game_start_btn");
@@ -91,6 +93,7 @@ function evaluateIfGameCanStart() {
     }
 }
 
+// Allow the game admin to configure the instance
 function displayGameSetup(state, isAdmin) {
     // Hide the sign-in
     let signin_div = document.getElementById("sign-in");
@@ -150,6 +153,7 @@ function displayGameSetup(state, isAdmin) {
 
 }
 
+// Process the game state sent by the server
 function process_gamestate(state) {
     console.log("= Processing Game State =");
     if (state.game_phase === "setup") {
