@@ -123,6 +123,7 @@ function displayGameSetup(state, isAdmin) {
                     input_checkbox.classList.add('form-check-input');
                     input_checkbox.setAttribute('type', 'checkbox');
                     input_checkbox.setAttribute('name', 'decks');
+                    input_checkbox.setAttribute('date-id', deck['_id']['$oid']);
                     input_checkbox.addEventListener('change', function(event) {
                         evaluateIfGameCanStart();
                     });
