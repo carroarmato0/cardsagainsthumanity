@@ -1,5 +1,5 @@
-let deckapi = {{ !deckapi_uri }};
-let websocket_endpoint = {{ !websocket_uri }};
+let deckapi = '{{ !deckapi_uri }}';
+let websocket_endpoint = '{{ !websocket_uri }}';
 let username;
 let game_phase;
 let amount_of_players = 0;

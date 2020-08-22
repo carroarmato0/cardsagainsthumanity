@@ -177,8 +177,8 @@ if __name__ == '__main__':
     """ Default values """
     server_address = "0.0.0.0"
     server_port = 8081
-    deckapi_uri = "'http://' + window.location.hostname + ':8080/api/v1'"
-    websocket_uri = "'ws://' + window.location.host + '/ws'"
+    deckapi_uri = "http://localhost:8080/api/v1"
+    websocket_uri = "ws://localhost:8081/ws"
     """ Try reading configuration from the environment """
     if os.environ.get('GAMEINSTANCE_ADDRESS'):
         server_address = os.environ.get('GAMEINSTANCE_ADDRESS')
