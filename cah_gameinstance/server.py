@@ -144,8 +144,10 @@ def websocket_handler(ws):
 
             else:
                 break
-    except WebSocketError:
-        print('Guess he died')
+    except WebSocketError as e:
+        print(player.username + " had a websocket error: " + str(e))
+    except AttributeError as e:
+        print(player.username + "'s websocket attribute doesn't exist: " + str(e))
     finally:
         if player is not None:
             '''players.remove(player)'''
