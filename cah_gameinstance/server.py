@@ -1,6 +1,7 @@
 import json
 import os
 import uuid
+from datetime import datetime
 
 import bottle
 from bottle import static_file
@@ -128,6 +129,9 @@ def websocket_handler(ws):
                             players.add(player)
                             """ Send current game state """
                             broadcast_message(generate_state())
+                            broadcast_message(
+                                '{ "event": "player_joined", "username": "' +
+                                player.username + '", "timestamp": "' + str(datetime.now().timestamp()) + '" }')
                         else:
                             player.username = response['username']
                             player.websocket.send(

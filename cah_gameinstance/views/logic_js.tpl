@@ -165,6 +165,14 @@ function process_gamestate(state) {
     updatePlayerList(state.players);
 }
 
+// Display that a new player has joined the game
+function process_player_joined(data) {
+    console.log("= Player joined event =");
+    let message_input = document.getElementById("messages_input");
+    let date = moment.unix(data['timestamp']);
+    message_input.textContent += date.format('DD/MM HH:mm:ss z') + " " + data['username'] + " joined.\r\n";
+}
+
 // Connection opened
 socket.addEventListener('open', function (event) {
     console.log("= Connected with Server =");
@@ -204,6 +212,9 @@ socket.addEventListener('message', function (event) {
             break;
         case "state":
             process_gamestate(response);
+            break;
+        case "player_joined":
+            process_player_joined(response);
             break;
     }
 });
