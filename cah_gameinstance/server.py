@@ -259,11 +259,6 @@ def send_logic_js():
     return bottle.template('logic_js', deckapi_uri=deckapi_uri, websocket_uri=websocket_uri)
 
 
-@app.route('/js/<filename:path>', method='GET')
-def send_js(filename):
-    return static_file(filename, root=package_root + '/resources/js/')
-
-
 @app.route('/img/<filename:path>', method='GET')
 def send_img(filename):
     return static_file(filename, root=package_root + '/resources/img/')
