@@ -47,9 +47,9 @@ This list gives an overview of the things already accomplished, and what's remai
   * ~~Docker Container~~
   * Functional tests
 * Implement the basic game.
-  * Lobby
-  * Selection of Decks
+  * ~~Lobby~~
+  * ~~Selection of Decks~~
   * Filtering of Cards
   * Game Logic
-  * Docker Container
+  * ~~Docker Container~~
   * Functional tests

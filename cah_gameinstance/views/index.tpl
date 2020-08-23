@@ -24,12 +24,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
   </head>
   <body>
 
-    <div id="app" class="container mt-5">
+    <div id="app" class="container-fluid">
 
-        <div id="sign-in">
+        <div id="sign-in" class="container mt-5">
             <div class="mb-3">
                 <input type="text" class="form-control" id="nickname_input" required placeholder="username">
                 <div class="invalid-feedback">Please choose a username.</div>
@@ -42,7 +43,7 @@
             </div>
         </div>
 
-        <div id="game_setup" class="container" style="display: none;">
+        <div id="game_setup" class="container-fluid mt-5" style="display: none;">
             <div class="row">
                 <div id="deck_selection">
                     <span>Deck Selection comes here</span>
@@ -53,12 +54,24 @@
                     <button id="game_start_btn" class="btn btn-secondary mb-3 form-control" disabled>Start Game</button>
                 </div>
             </div>
+        </div>
+
+        <div id="game_board" class="container-fluid" style="display: none;">
+            <div id="cards_on_deck" class="row">
+
+            </div>
+            <div id="my_cards" class="row">
+
+            </div>
+        </div>
+
+        <div id="game_dashboard" class="container-fluid" style="display: none;">
             <div class="row">
                 <div id="players_overview" class="col">
                     <span>Players appear here</span>
                 </div>
                 <div id="messages" class="col">
-                     <textarea class="form-control" id="messages_input" rows="10"></textarea>
+                     <textarea class="form-control" id="messages_input" rows="8"></textarea>
                 </div>
             </div>
         </div>

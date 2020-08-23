@@ -20,5 +20,6 @@ setup(name='Cah',
           'bottle-websocket',
           'pymongo',
           'iso-639',
+          'requests'
       ],
       )

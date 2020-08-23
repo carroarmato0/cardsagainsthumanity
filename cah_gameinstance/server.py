@@ -2,19 +2,28 @@ import json
 import os
 import uuid
 from datetime import datetime
+from json import JSONDecodeError
+from random import shuffle
 
 import bottle
 from bottle import static_file
 from bottle_websocket import GeventWebSocketServer, websocket
 from geventwebsocket import WebSocketError
+from pip._vendor import requests
 
+from cah.card import Card
+from cah.cardtype import CardType
+from cah.deck import Deck
+from cah_deckapi.server import conform_content
 from cah_gameinstance.gamephase import GamePhase
 from cah_gameinstance.player import Player
 
 debug = True
 game_phase = GamePhase.SETUP
-players = set()
+players = []
 instance_id = str(uuid.uuid4())
+prompt_cards = []
+response_cards = []
 
 app = bottle.Bottle()
 package_root = os.path.dirname(os.path.realpath(__file__))
@@ -42,7 +51,7 @@ def username_taken(username):
     return False
 
 
-def generate_state():
+def generate_state(my_player=None):
     state = {
         "event": "state"
     }
@@ -57,6 +66,10 @@ def generate_state():
     state['players'] = player_state
     state['game_phase'] = game_phase
 
+    if game_phase is not GamePhase.SETUP:
+        state['prompt_card'] = prompt_cards[0].to_json_obj()
+        state['my_cards'] = [card.to_json_obj() for card in my_player.cards]
+
     return json.dumps(state)
 
 
@@ -65,20 +78,59 @@ def broadcast_message(data):
         player.websocket.send(data)
 
 
+def choose_next_czar(players):
+    ''' Check who currently is the Czar '''
+    current_czar: Player = None
+    for player in players:
+        if player.isCzar:
+            current_czar = player
+            break
+    if current_czar is None:
+        ''' No one is currently the Czar, default to first player '''
+        players[0].isCzar = True
+        print("Player " + players[0].username + " is the new Czar")
+    else:
+        ''' Determine position '''
+        player_position = players.index(current_czar)
+        if player_position == len(players) - 1:
+            ''' Last player in the list, start from beginning '''
+            current_czar.isCzar = False
+            players[0].isCzard = True
+            print("Player " + players[0].username + " is the new Czar")
+        else:
+            ''' Next player is Czar '''
+            current_czar.isCzar = False
+            players[player_position+1].isCzar = True
+            print("Player " + players[player_position+1].username + " is the new Czar")
+
+
+def rotate_prompt_cards(prompt_cards):
+    top_card = prompt_cards.pop(0)
+    prompt_cards.append(top_card)
+
+
+def deal_cards(response_cards):
+    for player in players:
+        while len(player.cards) < 7:
+            player.add_card(response_cards.pop(0))
+
+
+def broadcast_state():
+    for player in players:
+        state = generate_state(player)
+        player.websocket.send(state)
+
+
 @app.get('/ws', apply=[websocket])
 def websocket_handler(ws):
+    global game_phase
+    global prompt_cards
+    global response_cards
     player = None
     try:
-        if len(players) == 0:
-            ''' This is the first player, send instance UUID '''
-            player = Player(websocket=ws, isAdmin=True)
-            player.websocket.send(
-                '{ "event": "player_creation", "instance_id": "' +
-                instance_id + '", "player_id": "' + player.uuid + '" }')
-            players.add(player)
-        else:
-            ''' There are existing users, ask if new connection, or reconnecting user '''
-            ws.send('{ "event": "identity_request", "instance_id": "' + instance_id + '" }')
+        """ Ask websocket connection to identify itself """
+        ws.send('{ "event": "identity_request", "instance_id": "' + instance_id + '" }')
+
         while True:
             msg = None
             if player is None:
@@ -87,67 +139,116 @@ def websocket_handler(ws):
                 msg = player.websocket.receive()
 
             if msg is not None:
-                response = json.loads(msg)
-                print("Client sent us: " + str(response))
+                response = None
+                try:
+                    response = json.loads(msg)
+                    print("Client sent us: " + str(response))
+                except JSONDecodeError as e:
+                    print(player.username + " send us invalid JSON: " + str(e))
 
-                if response['event'] == "existing_player":
-                    existing_player = get_player(response['player_id'])
-                    if existing_player is not None:
-                        print("Player " + existing_player.username + " (" + existing_player.uuid + ") rejoined")
-                        existing_player.websocket.close()
-                        player = existing_player
-                        player.websocket = ws
+                try:
+                    if response['event'] == "existing_player":
+                        existing_player = get_player(response['player_id'])
+                        if existing_player is not None:
+                            print("Player " + existing_player.username + " (" + existing_player.uuid + ") rejoined")
+                            existing_player.websocket.close()
+                            player = existing_player
+                            player.websocket = ws
 
-                        ''' Check if game is already in progress '''
-                        if game_phase != GamePhase.SETUP:
-                            """ Send current game state """
-                            broadcast_message(generate_state())
-                        else:
                             ''' Let the player know that he rejoined successfully '''
                             player.websocket.send('{ "event": "rejoin_ack" }')
                             """ Send current game state """
-                            broadcast_message(generate_state())
-                    else:
-                        ''' We don't recognize this player, so adding him '''
-                        player = Player(websocket=ws)
-                        player.websocket.send(
-                            '{ "event": "player_creation", "instance_id": "' +
-                            instance_id + '", "player_id": "' + player.uuid + '" }')
-                        players.add(player)
-                        """ Send current game state """
-                        broadcast_message(generate_state())
-                elif response['event'] == "set_username":
-                    # TODO: sanitize HTML entities
-                    """ Check if another player hasn't already this username is use """
-                    if not username_taken(response['username']):
-                        if not player:
-                            ''' New player, send instance UUID '''
-                            player = Player(websocket=ws, username=response['username'])
+                            broadcast_state()
+                        else:
+                            ''' We don't recognize this player, so adding him '''
+                            player = Player(websocket=ws)
                             player.websocket.send(
                                 '{ "event": "player_creation", "instance_id": "' +
                                 instance_id + '", "player_id": "' + player.uuid + '" }')
-                            players.add(player)
+                            players.append(player)
                             """ Send current game state """
-                            broadcast_message(generate_state())
-                            broadcast_message(
-                                '{ "event": "player_joined", "username": "' +
-                                player.username + '", "timestamp": "' + str(datetime.now().timestamp()) + '" }')
+                            broadcast_state()
+                    elif response['event'] == "set_username":
+                        # TODO: sanitize HTML entities
+                        """ Check if another player hasn't already this username is use """
+                        if not username_taken(response['username']):
+                            if not player:
+                                ''' Make admin if only player '''
+                                is_admin = True if len(players) == 0 else False
+                                ''' New player, send instance UUID '''
+                                player = Player(websocket=ws, username=response['username'], isAdmin=is_admin)
+                                player.websocket.send(
+                                    '{ "event": "player_creation", "instance_id": "' +
+                                    instance_id + '", "player_id": "' + player.uuid + '" }')
+                                players.append(player)
+                                """ Send current game state """
+                                broadcast_state()
+                                broadcast_message(
+                                    '{ "event": "player_joined", "username": "' +
+                                    player.username + '", "timestamp": "' + str(datetime.now().timestamp()) + '" }')
+                            else:
+                                player.username = response['username']
+                                player.websocket.send(
+                                    '{ "event": "username_ok" }')
+                                """ Send current game state """
+                                broadcast_state()
                         else:
-                            player.username = response['username']
                             player.websocket.send(
-                                '{ "event": "username_ok" }')
-                            """ Send current game state """
-                            broadcast_message(generate_state())
-                    else:
-                        player.websocket.send(
-                            '{ "event": "username_nok" }')
+                                '{ "event": "username_nok" }')
+                    elif response['event'] == 'game_start':
+                        if player.isAdmin:
+                            if game_phase is GamePhase.SETUP:
+                                """ Fetch the decks """
+                                for deck_id in response['deck_ids']:
+                                    response = requests.get(deckapi_uri + "/decks/" + deck_id)
+                                    if response.status_code == 200:
+                                        entry = json.loads(response.content.decode('utf-8'))
+                                        deck = Deck(
+                                            name=entry['name'],
+                                            description=entry['description'],
+                                            lang=entry['lang'],
+                                            cards=[]
+                                        )
 
-            else:
-                break
+                                        ''' Attempt to create Card objects '''
+                                        if len(entry['cards']) > 0:
+                                            for card_entry in entry['cards']:
+                                                card = Card(
+                                                    type=CardType(card_entry['type']),
+                                                    content=conform_content(str(card_entry['content'])),
+                                                    pick=int(card_entry['pick']),
+                                                    draw=int(card_entry['draw'])
+                                                )
+                                                deck.cards.append(card)
+                                        prompt_cards.extend(deck.prompt_cards)
+                                        response_cards.extend(deck.response_cards)
+                                    game_phase = GamePhase.CARDS_SELECTION
+                                    print('Player ' + player.username + ' started the game.')
+                                    ''' Choose the next Czar '''
+                                    choose_next_czar(players)
+                                    ''' Shuffle the cards '''
+                                    shuffle(prompt_cards)
+                                    shuffle(response_cards)
+                                    rotate_prompt_cards(prompt_cards)
+                                    deal_cards(response_cards)
+                                    broadcast_state()
+                            else:
+                                player.websocket.send(
+                                    '{ "event": "unauthorized", "message": "You cannot change game settings while game '
+                                    'in progress." }')
+                        else:
+                            player.websocket.send(
+                                '{ "event": "unauthorized", "message": "You are unauthorized for this action" }')
+                    else:
+                        print("I have no idea what to do with that message")
+                except TypeError as e:
+                    print("We received an invalid request: " + str(e))
     except WebSocketError as e:
-        print(player.username + " had a websocket error: " + str(e))
+        if hasattr(player, 'username'):
+            print(player.username + " had a websocket error: " + str(e))
     except AttributeError as e:
-        print(player.username + "'s websocket attribute doesn't exist: " + str(e))
+        if hasattr(player, 'username'):
+            print(player.username + "'s websocket attribute doesn't exist: " + str(e))
     finally:
         if player is not None:
             '''players.remove(player)'''
@@ -164,8 +265,13 @@ def send_js(filename):
 
 
 @app.route('/img/<filename:path>', method='GET')
-def send_js(filename):
+def send_img(filename):
     return static_file(filename, root=package_root + '/resources/img/')
+
+
+@app.route('/css/<filename:path>', method='GET')
+def send_css(filename):
+    return static_file(filename, root=package_root + '/resources/css/')
 
 
 @app.route('/favicon/<filename:path>', method='GET')

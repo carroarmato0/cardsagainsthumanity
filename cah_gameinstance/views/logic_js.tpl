@@ -86,22 +86,25 @@ function evaluateIfGameCanStart() {
         game_start_btn.disabled = false;
         game_start_btn.classList.remove('btn-secondary');
         game_start_btn.classList.add('btn-success');
+        return true;
     } else {
         game_start_btn.disabled = true;
         game_start_btn.classList.add('btn-secondary');
         game_start_btn.classList.remove('btn-success');
+        return false;
     }
+
+    return false;
 }
 
 // Allow the game admin to configure the instance
 function displayGameSetup(state, isAdmin) {
     // Hide the sign-in
-    let signin_div = document.getElementById("sign-in");
-    signin_div.style.display = "none";
+    show_sign_in(false);
 
     // Fetch the Game setup
+    show_game_setup(true);
     let game_setup_div = document.getElementById("game_setup");
-    game_setup_div.style.display = "";
     let deck_selection_div = document.getElementById("deck_selection");
     let game_controls = document.getElementById("game_controls");
 
@@ -126,7 +129,7 @@ function displayGameSetup(state, isAdmin) {
                     input_checkbox.classList.add('form-check-input');
                     input_checkbox.setAttribute('type', 'checkbox');
                     input_checkbox.setAttribute('name', 'decks');
-                    input_checkbox.setAttribute('date-id', deck['_id']['$oid']);
+                    input_checkbox.setAttribute('data-id', deck['_id']['$oid']);
                     input_checkbox.addEventListener('change', function(event) {
                         evaluateIfGameCanStart();
                     });
@@ -147,15 +150,130 @@ function displayGameSetup(state, isAdmin) {
 
         });
 
+        let start_game_btn = document.getElementById("game_start_btn");
+        start_game_btn.addEventListener("click", function(event) {
+            if (evaluateIfGameCanStart) {
+                // Get IDs of checked decks
+                let checked_deck_checkboxes = document.querySelectorAll('#deck_selection input[type="checkbox"]:checked');
+                let chosen_deck_ids = [];
+                for (var checkbox of checked_deck_checkboxes) {
+                    chosen_deck_ids.push("\"" + checkbox.dataset.id + "\"");
+                }
+                console.log("= Requesting Server to Start Game =");
+                socket.send('{ "event": "game_start", "deck_ids": [' + chosen_deck_ids.join() + '] }');
+            }
+        });
+
     } else {
       deck_selection_div.innerHTML = '<div class="alert alert-info" role="alert">Waiting for game to start.</div>';
     }
 
 }
 
+function show_sign_in(isTrue) {
+    let signin_div = document.getElementById("sign-in");
+    if (isTrue) {
+        signin_div.style.display = "";
+    }
+    else {
+        signin_div.style.display = "none";
+    }
+}
+
+function show_game_setup(isTrue) {
+    let game_setup_div = document.getElementById("game_setup");
+    if (isTrue) {
+        game_setup_div.style.display = "";
+    }
+    else {
+        game_setup_div.style.display = "none";
+    }
+}
+
+function show_game_board(isTrue) {
+    let game_board_div = document.getElementById("game_board");
+    if (isTrue) {
+        game_board_div.style.display = "";
+    }
+    else {
+        game_board_div.style.display = "none";
+    }
+}
+
+function show_game_dashboard(isTrue) {
+    let game_dashboard_div = document.getElementById("game_dashboard");
+    if (isTrue) {
+        game_dashboard_div.style.display = "";
+    }
+    else {
+        game_dashboard_div.style.display = "none";
+    }
+}
+
+function render_cards(state) {
+    // Render Cards on Deck
+    let cards_on_deck_div = document.getElementById("cards_on_deck");
+    // Reset content
+    cards_on_deck_div.innerHTML = "";
+
+    let cards_on_deck_list = document.createElement('ul');
+    cards_on_deck_list.classList.add("cards");
+
+    //Render the Prompt Card
+    let prompt_card_list_element = document.createElement('li');
+    prompt_card_list_element.classList.add("card");
+    prompt_card_list_element.classList.add( state['prompt_card']['type'] + "-card" );
+    let prompt_card_article = document.createElement('article');
+    let prompt_card_content = document.createElement('p');
+    prompt_card_content.classList.add('content');
+    prompt_card_content.textContent = state['prompt_card']['content'];
+    let prompt_card_modifiers = document.createElement('ul');
+    prompt_card_modifiers.classList.add('modifiers');
+    if ( state['prompt_card']['type'] === "prompt" && state['prompt_card']['pick'] > 1 ) {
+        let prompt_card_pick = document.createElement('li');
+        prompt_card_pick.textContent = "Pick: " + state['prompt_card']['pick'];
+        prompt_card_modifiers.appendChild(prompt_card_pick);
+    }
+    if (state['prompt_card']['type'] === "prompt" && state['prompt_card']['draw'] > 1) {
+        let prompt_card_draw = document.createElement('li');
+        prompt_card_draw.textContent = "Draw: " + state['prompt_card']['draw'];
+        prompt_card_modifiers.appendChild(prompt_card_draw);
+    }
+    prompt_card_article.appendChild(prompt_card_content);
+    prompt_card_article.appendChild(prompt_card_modifiers);
+    prompt_card_list_element.appendChild(prompt_card_article);
+    cards_on_deck_list.appendChild(prompt_card_list_element);
+    cards_on_deck.appendChild(cards_on_deck_list);
+
+    // Render my response cards
+    let my_cards_div = document.getElementById("my_cards");
+    // Reset content
+    my_cards_div.innerHTML = "";
+
+    let my_cards_list = document.createElement('ul');
+    my_cards_list.classList.add("cards");
+
+    state['my_cards'].forEach(function(card){
+        let response_card_list_element = document.createElement('li');
+        response_card_list_element.classList.add("card");
+        response_card_list_element.classList.add( card['type'] + "-card" );
+        let response_card_article = document.createElement('article');
+        let response_card_content = document.createElement('p');
+        response_card_content.classList.add('content');
+        response_card_content.textContent = card['content'];
+        response_card_article.appendChild(response_card_content);
+        response_card_list_element.appendChild(response_card_article);
+        my_cards_list.appendChild(response_card_list_element);
+    })
+    my_cards_div.appendChild(my_cards_list);
+}
+
 // Process the game state sent by the server
 function process_gamestate(state) {
     console.log("= Processing Game State =");
+    show_sign_in(false);
+    show_game_dashboard(true);
+
     if (state.game_phase === "setup") {
         game_phase = "setup";
         if (state.players[username].isAdmin) {
@@ -165,6 +283,12 @@ function process_gamestate(state) {
             console.log("= Game Setup Mode =");
             displayGameSetup(state, false);
         }
+    } else if (state.game_phase === "draw") {
+        game_phase = "draw"
+        console.log("= Game Draw Mode =");
+        show_game_setup(false);
+        show_game_board(true);
+        render_cards(state);
     }
 
     updatePlayerList(state.players);
@@ -225,6 +349,7 @@ socket.addEventListener('message', function (event) {
 });
 
 // Sign in dialog
+show_sign_in(true);
 let signin_btn = document.getElementById("signin_btn");
 signin_btn.addEventListener('click', function (event) {
     username = document.getElementById("nickname_input").value.trim();
