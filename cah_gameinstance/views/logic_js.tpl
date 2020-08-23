@@ -255,6 +255,8 @@ function render_cards(state) {
 
     state['my_cards'].forEach(function(card){
         let response_card_list_element = document.createElement('li');
+        response_card_list_element.setAttribute('data-type', card['type']);
+        response_card_list_element.setAttribute('data-content', card['content']);
         response_card_list_element.classList.add("card");
         response_card_list_element.classList.add( card['type'] + "-card" );
         let response_card_article = document.createElement('article');
