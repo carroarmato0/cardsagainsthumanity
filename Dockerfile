@@ -14,8 +14,8 @@ ENV                     DECKAPI_DEBUG           true
 ENV                     GAMEINSTANCE_ADDRESS        "0.0.0.0"
 ENV                     GAMEINSTANCE_PORT           8081
 ENV                     GAMEINSTANCE_DEBUG          true
-ENV                     GAMEINSTANCE_DECKAPI_URI    "'http://' + window.location.hostname + ':8080/api/v1'"
-ENV                     GAMEINSTANCE_WEBSOCKET_URI  "'ws://' + window.location.host + '/ws'"
+ENV                     GAMEINSTANCE_DECKAPI_URI    "http://localhost:8080/api/v1"
+ENV                     GAMEINSTANCE_WEBSOCKET_URI  "ws://localhost:8081/ws"
 
 ENV                     VIRTUAL_ENV                 "/opt/venv"
 
