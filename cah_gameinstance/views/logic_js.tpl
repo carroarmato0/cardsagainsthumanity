@@ -210,6 +210,10 @@ function show_game_dashboard(isTrue) {
     }
 }
 
+function areWeCzar(state) {
+    return state['players'][username].isCzar;
+}
+
 function render_cards(state) {
     // Render Cards on Deck
     let cards_on_deck_div = document.getElementById("cards_on_deck");
@@ -259,6 +263,29 @@ function render_cards(state) {
         response_card_list_element.setAttribute('data-content', card['content']);
         response_card_list_element.classList.add("card");
         response_card_list_element.classList.add( card['type'] + "-card" );
+        // If we are the current Czar, disable our deck selection
+        if (areWeCzar(state)) {
+            response_card_list_element.classList.add("disabled");
+        } else {
+            response_card_list_element.addEventListener('click', function(event) {
+                // Get card information
+                let card_obj = event.target;
+
+                // Check if toggling is necessary
+                if (card_obj.classList.contains('selected')) {
+                    card_obj.classList.remove('selected');
+                } else {
+                    card_obj.classList.add('selected');
+                }
+
+                // Only submit cards if the amount of selected ones satisfies the prompt card pick number
+                let selected_cards = document.querySelectorAll("#my_cards .selected");
+                if ( selected_cards.length >= state['prompt_card']['pick'] ) {
+                    console.log("= Sending our selected cards to server =")
+                }
+
+            });
+        }
         let response_card_article = document.createElement('article');
         let response_card_content = document.createElement('p');
         response_card_content.classList.add('content');

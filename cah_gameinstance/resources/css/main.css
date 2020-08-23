@@ -50,3 +50,18 @@
     box-shadow: 2px 2px black;
     cursor: pointer;
 }
+
+.response-card.disabled {
+    cursor: auto;
+    opacity: 0.4;
+}
+
+.response-card.disabled:hover {
+    border: 0px solid grey;
+    box-shadow: 2px 2px grey;
+    opacity: 0.4;
+}
+
+.response-card.selected {
+    box-shadow: 0 0 10px black;
+}
