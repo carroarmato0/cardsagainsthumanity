@@ -20,6 +20,13 @@
     box-shadow: 2px 2px grey;
     display: inline-flex;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .deck .content, .card .content {
     height: 80%;
